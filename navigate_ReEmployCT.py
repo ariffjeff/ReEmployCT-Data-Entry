@@ -250,7 +250,7 @@ def enterData(creds, jobData):
   # Weekly Certification and Work Search Record Acknowledgement
   #############################################################
 
-  driver.find_element(by=By.ID, value='esignature') # SSN last 4 digits
+  m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(SSN_LAST4) # SSN last 4 digits
   driver.find_element(by=By.ID, value='method__1').click() # Submit
 
   ###################################
