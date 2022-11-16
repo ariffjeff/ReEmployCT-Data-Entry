@@ -1,6 +1,5 @@
 import pandas as pd
 import json
-import credentialsController as credCon
 from cryptography.fernet import Fernet
 import os
 from datetime import datetime, timedelta
@@ -9,6 +8,7 @@ import navigate_ReEmployCT
 import colorama
 from selenium import webdriver
 import modules_filepaths as m_fp
+import controller_credentials as credCon
 
 def main():
     print(colorama.Fore.GREEN + "\n")
@@ -27,16 +27,9 @@ def main():
     with open(JOB_FILEPATH_JSON, 'r') as file:
         json_jobDataFilepath = json.load(file)
 
-    def does_job_data_file_exist(filepath):
-        if(not os.path.isfile(filepath) or os.path.splitext(filepath)[-1] != ".xlsx"):
-            print("No user job data excel file found.")
-            return False
-        print("Job data excel found at: \"" + filepath + "\"")
-        return True
-
     # validate job data filepath
     updateJobFilepath = False
-    while(not does_job_data_file_exist(json_jobDataFilepath['filepath_jobData'])):
+    while(not m_fp.is_job_data_filepath_valid(json_jobDataFilepath['filepath_jobData'])):
         json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.GREEN + "Enter the filepath (including file extension) to your job data excel file: " + colorama.Style.RESET_ALL)
         updateJobFilepath = True
 
@@ -72,10 +65,6 @@ def main():
     # Manage User Credentials
     ###################################
 
-    def create_user_credentials():
-        print(colorama.Fore.GREEN + "\nEnter your DOL ReEmployCT credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
-        credCon.main()
-
     # if missing credential files, delete anything remaining, then recreate credentials
     if(not os.path.exists('credFile.ini') or not os.path.exists('key.key')):
         if(os.path.exists('credFile.ini')):
@@ -84,13 +73,13 @@ def main():
         elif(os.path.exists('key.key')):
             print("Missing credentials file.\nDeleting credential's key file to reset.")
             os.remove('key.key')
-        create_user_credentials()
+        credCon.create_user_credentials()
 
     creds = credCon.Credentials()
     creds.rebuild_creds_from_file('credFile.ini')
     if(creds.are_creds_expired()):
         print("Your credentials expired on " + creds.expire_time()['formatted'])
-        create_user_credentials()
+        credCon.create_user_credentials()
 
     ############
     # Data Entry

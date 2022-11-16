@@ -5,6 +5,7 @@ import time
 import os
 import sys
 from datetime import datetime, timedelta
+import colorama
 
 class Credentials():
 
@@ -163,6 +164,12 @@ class Credentials():
                 if tuples[0] == valueKey:
                     config[tuples[0]] = tuples[1]
                     return f.decrypt(config[valueKey].encode()).decode()
+
+
+def create_user_credentials():
+    print(colorama.Fore.GREEN + "\nEnter your DOL ReEmployCT credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
+    main()
+
 
 def main():
     creds = Credentials()
