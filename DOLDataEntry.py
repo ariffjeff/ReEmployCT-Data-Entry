@@ -8,8 +8,8 @@ import datetime
 import navigate_ReEmployCT
 import colorama
 from selenium import webdriver
+import modules_filepaths as m_fp
 
-# get job data filepath from json
 def main():
     print(colorama.Fore.GREEN + "\n")
     print("-"*91)
@@ -17,7 +17,13 @@ def main():
     print("-"*91)
     print(colorama.Style.RESET_ALL + "\n")
 
+    # create job data filepath json file if missing
     JOB_FILEPATH_JSON = "jobDataLocation.json"
+    if(not m_fp.is_filepath_valid(JOB_FILEPATH_JSON)):
+        with open(JOB_FILEPATH_JSON, 'w') as file:
+            json.dump({'filepath_jobData': ''}, file)
+
+    # get job data filepath from json
     with open(JOB_FILEPATH_JSON, 'r') as file:
         json_jobDataFilepath = json.load(file)
 
