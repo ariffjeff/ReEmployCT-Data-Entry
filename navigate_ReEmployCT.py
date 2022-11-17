@@ -18,13 +18,8 @@ def enterData(creds, jobData):
   PASSWORD = creds.password
   SSN_LAST4 = creds.ssn_last4
 
-  print(colorama.Fore.RED + "\n*** AVOID MOVING YOUR MOUSE OVER THE WEB PAGE DURING ELEMENT NAVIGATION TO PREVENT UNEXPECTED BEHAVIOUR AND ERRORS ***\n" + colorama.Style.RESET_ALL)
-  print("Starting web driver...")
-  driver = webdriver.Firefox()
   site = "https://reemployct.dol.ct.gov/accessct/faces/login/login_local.xhtml"
-  print("Loading: {}".format(site))
-  driver.get(site)
-  driver.maximize_window()
+  driver = m_driver.start_driver(site)
 
   ############
   # Login page

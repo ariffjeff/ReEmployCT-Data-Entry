@@ -39,3 +39,12 @@ def print_solveCaptcha(timeout):
     + "\n"
     + "**"*37
     + colorama.Style.RESET_ALL + "\n")
+
+def start_driver(site):
+    print(colorama.Fore.RED + "\n*** AVOID MOVING YOUR MOUSE OVER THE WEB PAGE DURING ELEMENT NAVIGATION TO PREVENT UNEXPECTED BEHAVIOUR AND ERRORS ***\n" + colorama.Style.RESET_ALL)
+    print("Starting web driver...")
+    driver = webdriver.Firefox()
+    print("Loading: {}".format(site))
+    driver.get(site)
+    driver.maximize_window()
+    return driver
