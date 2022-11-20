@@ -92,7 +92,7 @@ def main():
         + colorama.Style.RESET_ALL)
         return
     
-    driver = navigate_ReEmployCT.enterData(creds, target_week)
+    driver = navigate_ReEmployCT.navigate(creds, target_week)
     driver.quit()
     print("Data entry finished.")
 

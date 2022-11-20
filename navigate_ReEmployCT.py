@@ -14,7 +14,7 @@ import entry_weeklyCertification
 import modules_webdriver as m_driver
 import wrangle_job_data
 
-def enterData(creds, jobData):
+def navigate(creds, jobData):
   
   USERNAME = creds.username
   PASSWORD = creds.password
