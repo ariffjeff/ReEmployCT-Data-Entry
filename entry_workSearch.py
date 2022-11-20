@@ -32,13 +32,7 @@ def questionnaire(driver, timeout=0):
 
   # force wait until on either work search page
   # WC-802 = no previous work entries present, WC-806 = one or more previous work entries present
-  while(True):
-    try:
-      screenID = driver.find_element(By.ID, 'templateDivScreenId').text
-      if(screenID == 'WC-802' or screenID == 'WC-806'):
-        break
-    except:
-      break
+  m_driver.wait_for_page(driver, ['WC-802', 'WC-806'])
 
 
 def enterWorkSearch(driver, jobData_day):

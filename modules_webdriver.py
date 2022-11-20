@@ -49,6 +49,27 @@ def start_driver(site):
     driver.maximize_window()
     return driver
 
+def wait_for_page(driver, targetIDs):
+    '''
+    Some pages have a unique screen ID which is shown in the top right corner.
+    This ID can be conveniently used to check which page is current, and thus be abused to wait for user input.
+
+    Arguments:
+        driver : webdriver obj
+            the webdriver object
+        targetIDs : str array
+            the array of screenIDs to check for
+    '''
+
+    while(True):
+        try:
+            screenID = driver.find_element(By.ID, 'templateDivScreenId').text
+            if(screenID in targetIDs):
+                break
+        except:
+            break
+
+
 class ScrollPage:
     def TOP(driver):
         driver.execute_script("window.scrollTo(0, 0);")
