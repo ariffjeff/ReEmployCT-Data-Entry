@@ -52,35 +52,8 @@ def enterData(creds, jobData):
   ActionChains(driver).move_to_element(button_wc).perform() # move mouse to dropdown (user mouse movement causes dropdown to disappear)
   m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[3]/div/div/div/ul/li[2]/ul/li[1]/a').click() # File Weekly Certification
 
-  ###########################
-  # Work Search Questionnaire
-  ###########################
+  entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
 
-  # complete initial weekly certification questions
-  m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[4]/tbody/tr[1]/td[4]/table/tbody/tr/td[1]/div/div[2]/span').click() # radio, Yes
-  m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[4]/tbody/tr[5]/td/div/div/div/iframe').click() # captcha
-  try:
-    m_driver.wait_find_element(driver, By.ID, 'method__1', CAPTCHA_TIMEOUT, forceDelay=.2).click() # next
-  except:
-    m_driver.print_solveCaptcha(CAPTCHA_TIMEOUT)
-
-  ############################
-  # Work Search Record Details
-  ############################
-
-  # m_driver.waitGetElement(driver, By.ID, 'j_id_46_label', 240, forceDelay=.5) # wait for specific page
-  # screenID = m_driver.waitGetElement(driver, By.ID, 'templateDivScreenId', 240, forceDelay=.5).text # wait for specific page
-
-  # force wait until on either work search page
-  # WC-802 = no previous work entries present, WC-806 = one or more previous work entries present
-  while(True):
-    try:
-      screenID = driver.find_element(By.ID, 'templateDivScreenId').text
-      if(screenID == 'WC-802' or screenID == 'WC-806'):
-        break
-    except:
-      break
-  
   wrangle = wrangle_job_data.main(driver, jobData)
   jobData = wrangle['jobData']
 

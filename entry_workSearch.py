@@ -14,6 +14,37 @@ import stateDictionary as states
 # Work Search Record Details
 ############################
 
+def questionnaire(driver, timeout=0):
+  ###########################
+  # Work Search Questionnaire
+  ###########################
+
+  # complete initial weekly certification questions
+  m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[4]/tbody/tr[1]/td[4]/table/tbody/tr/td[1]/div/div[2]/span').click() # radio, Yes
+  m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[4]/tbody/tr[5]/td/div/div/div/iframe').click() # captcha
+  try:
+    m_driver.wait_find_element(driver, By.ID, 'method__1', timeout, forceDelay=.2).click() # next
+  except:
+    m_driver.print_solveCaptcha(timeout)
+
+  ############################
+  # Work Search Record Details
+  ############################
+
+  # m_driver.waitGetElement(driver, By.ID, 'j_id_46_label', 240, forceDelay=.5) # wait for specific page
+  # screenID = m_driver.waitGetElement(driver, By.ID, 'templateDivScreenId', 240, forceDelay=.5).text # wait for specific page
+
+  # force wait until on either work search page
+  # WC-802 = no previous work entries present, WC-806 = one or more previous work entries present
+  while(True):
+    try:
+      screenID = driver.find_element(By.ID, 'templateDivScreenId').text
+      if(screenID == 'WC-802' or screenID == 'WC-806'):
+        break
+    except:
+      break
+
+
 def workSearch(driver, jobData_day):
   # work search type dropdown - employer contact
   m_driver.wait_find_element(driver, By.ID, 'j_id_46_label', 120, forceDelay=0.3).click() # Type of Work Search - Dropdown
