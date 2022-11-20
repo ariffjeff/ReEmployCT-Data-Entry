@@ -7,6 +7,7 @@ def main(driver, jobData):
   '''
   Sanitize and simplify user's excel job data.
   Only return job data that is required for satisfying ReEmployCT's work-search job entry requirements.
+  Should be executed on the work search page (where job data is entered) where there may be previous job entries present so they can be read.
   '''
 
   # identify the number of existing job entries (this would implicitly reduce the number of entries needed to enter)
