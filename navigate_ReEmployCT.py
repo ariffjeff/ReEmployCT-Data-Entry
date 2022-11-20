@@ -66,7 +66,7 @@ def navigate(creds, jobData):
     print(colorama.Fore.GREEN + "If you do not need to look at the existing entries, quit the browser." + colorama.Style.RESET_ALL)
     # quit when user closes browser
     try:
-       # look for non existent element to hold page (exception raised when user closes browser)
+      # look for non existent element to hold page (exception raised when user closes browser)
       m_driver.wait_find_element(driver, By.ID, 'nothingnullnothingnullnothingnull', 60 * 60, silentPrint=True)
     except:
       return driver
