@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import entry_workSearch
 import modules_webdriver as m_driver
+import wrangle_job_data
 
 def enterData(creds, jobData):
   
@@ -79,92 +80,15 @@ def enterData(creds, jobData):
     except:
       break
   
-  # identify the number of existing job entries (this would implicitly reduce the number of entries needed to enter)
-  entries_existing_n = 0
-  entries_existing = []
-  entries_min = 3 # minimum 3 work search entries for compliance
-  if(driver.title == 'Work Search Summary'): # this page will appear instead of 'Work Search Record Details' if there are already existing entries
-    entries_container = m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[3]/tbody')
-    entries_existing_scraped = entries_container.find_elements(By.XPATH, "./tr")
-    entries_existing_n = len(entries_existing_scraped)
-    print(colorama.Fore.GREEN +
-    '\n{} existing work entries found. Must enter {} more for DOL compliance.'.format(entries_existing_n, entries_min - entries_existing_n)
-     + colorama.Style.RESET_ALL)
-  
-    # rebuild data from existing entries
-    for entry in entries_existing_scraped:
-      cols = entry.find_elements(By.XPATH, './child::*')
-      date_raw = cols[0].text
-      summary_raw = cols[2].text.split('\n')
-      summary = {}
-      summary['Date of Work Search'] = pd.to_datetime(date_raw, format='%m/%d/%Y')
-      for i in summary_raw:
-        i = i.split(':')
-        summary[i[0]] = i[1]
-      entries_existing.append(summary)
-
-  # filter out any excel job data days that already have a matching existing entry on the Work Search Summary page
-  # doesn't account for when excel job and existing entry are the same job application but some column data is different (i.e. user retroactively added an email to excel job)
-  # this is done by comparing cleaned dictionaries
-  # clean existing entry dicts of empty values
-  # entries_existing_keys = [[] for i in range(len(entries_existing))]
-  # i = 0
-  # for entry in entries_existing:
-  #   keys_mark = []
-  #   for key in entry: # mark keys of empty values
-  #     if(entry[key] == ''):
-  #       keys_mark.append(key)
-  #   for key in keys_mark: # delete key value pairs
-  #     del entry[key]
-  #   # entries_existing_keys[i] = list(entries_existing[0])
-  #   # i += 1
-    
-  # clean excel jobs rows and convert them to dicts
-  jobData_toCompare = []
-  for jobRow in range(len(jobData)):
-    jobRow = jobData.iloc[jobRow]
-    jobRow = jobRow.dropna()
-    date_timestamp_col = jobRow['Date of Work Search'] # save timestamp dtype because .strip() destroys it
-    jobRow = jobRow.str.strip() # strip leading and trailing whitespaces
-    jobRow['Date of Work Search'] = date_timestamp_col
-    jobRow = jobRow.drop('index')
-    jobRow = jobRow.to_dict()
-    jobData_toCompare.append(jobRow)
-  
-  def deleteDictKeys(dictionary, keys):
-    dict_copy = dict(dictionary) # non reference copy
-    for key in dict_copy:
-      if(key not in keys):
-        del dictionary[key]
-    return dictionary
-
-  # most simple unique indentifying info of a job application
-  JOB_DATA_TO_MATCH = [
-    'Date of Work Search',
-    'Employer Name',
-    'Position Applied For'
-  ]
-  # isolate dict key values to only the most simple unqiue identifying info that needs to be compared
-  for jobRow in jobData_toCompare:
-    jobRow = deleteDictKeys(jobRow, JOB_DATA_TO_MATCH)
-  for entry in entries_existing:
-    entry = deleteDictKeys(entry, JOB_DATA_TO_MATCH)
-
-  # filter out existing excel job data rows
-  jobData_existing_indices = []
-  for entry in entries_existing:
-    for jobRow in range(len(jobData_toCompare)):
-      if(entry == jobData_toCompare[jobRow]):
-        jobData_existing_indices.append(jobRow)
-        break
-  jobData = jobData.drop(jobData_existing_indices).reset_index()
+  wrangle = wrangle_job_data.main(driver, jobData)
+  jobData = wrangle.jobData
 
   # error if user doesn't have enough unique jobs to match minimum compliance 
-  if(len(jobData) < entries_min - entries_existing_n):
+  if(len(jobData) < wrangle.entries_min - wrangle.entries_existing_n):
     print(colorama.Fore.RED)
     print("Not enough jobs found in excel file to enter for target week!")
     print("{} jobs available to enter that aren't duplicates of any existing entries.".format(len(jobData)))
-    print("You must enter at least {} more jobs into the excel file for the target week.".format(entries_min - entries_existing_n) + colorama.Style.RESET_ALL)
+    print("You must enter at least {} more jobs into the excel file for the target week.".format(wrangle.entries_min - wrangle.entries_existing_n) + colorama.Style.RESET_ALL)
     print(colorama.Fore.GREEN + "If you do not need to look at the existing entries, quit the browser." + colorama.Style.RESET_ALL)
     # quit when user closes browser
     try:
@@ -174,16 +98,16 @@ def enterData(creds, jobData):
       return driver
 
   # enter job data
-  while(entries_existing_n < entries_min):
-    jobRow = jobData.iloc[entries_existing_n]
+  while(wrangle.entries_existing_n < wrangle.entries_min):
+    jobRow = jobData.iloc[wrangle.entries_existing_n]
     print(colorama.Fore.GREEN +
-    "\n(Job: {}/{}) Entering data: {} - {}".format(entries_existing_n + 1, entries_min, jobRow['Employer Name'], jobRow['Position Applied For'])
+    "\n(Job: {}/{}) Entering data: {} - {}".format(wrangle.entries_existing_n + 1, wrangle.entries_min, jobRow['Employer Name'], jobRow['Position Applied For'])
     + colorama.Style.RESET_ALL)
-    if(entries_existing_n > 0): # different page layout when existing entries are present
+    if(wrangle.entries_existing_n > 0): # different page layout when existing entries are present
       m_driver.ScrollPage.BOTTOM(driver) # scroll to bottom of page to reveal button since many entries will push button out of view
       m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
     entry_workSearch.main(driver, jobRow)
-    entries_existing_n += 1
+    wrangle.entries_existing_n += 1
 
   #####################
   # Work Search Summary
@@ -216,7 +140,7 @@ def enterData(creds, jobData):
   ##############################
 
   # Were you physically able to work full time?
-  driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[1]/td[5]/table/tbody/tr/td[1]/div/div[2]').click()
+  m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[1]/td[5]/table/tbody/tr/td[1]/div/div[2]').click()
   # Were you available for full time work?
   driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[4]/td[5]/table/tbody/tr/td[1]/div/div[2]').click()
   # Did you start school, college or training, which you have not already reported to the Labor Department?
