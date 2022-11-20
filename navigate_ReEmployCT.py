@@ -52,6 +52,25 @@ def navigate(creds, jobData):
   ActionChains(driver).move_to_element(button_wc).perform() # move mouse to dropdown (user mouse movement causes dropdown to disappear)
   m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[3]/div/div/div/ul/li[2]/ul/li[1]/a').click() # File Weekly Certification
 
+  # detect Work Search Questionnaire page (site detects that work search job entries have not yet been finally submitted for the week)
+  # if the work search job entries have already been submitted (as in user can't go back and edit them) then the website auto redirects to weekly certification
+  screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId').text
+  if(screenID != 'WC-800'):
+    ##############################
+    # Weekly Certification Details
+    ##############################
+
+    entry_weeklyCertification.main(driver)
+
+    #############################################################
+    # Weekly Certification and Work Search Record Acknowledgement
+    #############################################################
+
+    m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(creds.ssn_last4) # SSN last 4 digits
+    driver.find_element(by=By.ID, value='method__1').click() # Submit
+
+    return driver
+
   entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
 
   wrangle = wrangle_job_data.main(driver, jobData)
@@ -108,19 +127,6 @@ def navigate(creds, jobData):
   ######################################################
 
   m_driver.wait_find_element(driver, By.ID, 'method').click() # File Weekly Certification
-
-  ##############################
-  # Weekly Certification Details
-  ##############################
-
-  entry_weeklyCertification.main(driver)
-
-  #############################################################
-  # Weekly Certification and Work Search Record Acknowledgement
-  #############################################################
-
-  m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(SSN_LAST4) # SSN last 4 digits
-  driver.find_element(by=By.ID, value='method__1').click() # Submit
 
   ###################################
   # Weekly Certification Confirmation
