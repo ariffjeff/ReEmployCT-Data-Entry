@@ -79,9 +79,10 @@ def enterData(creds, jobData):
     except:
       break
   
+  # identify the number of existing job entries (this would implicitly reduce the number of entries needed to enter)
   entries_existing_n = 0
+  entries_existing = []
   entries_min = 3 # minimum 3 work search entries for compliance
-  # reduce number of entries to do if there are already existing entries
   if(driver.title == 'Work Search Summary'): # this page will appear instead of 'Work Search Record Details' if there are already existing entries
     entries_container = m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[3]/tbody')
     entries_existing_scraped = entries_container.find_elements(By.XPATH, "./tr")
@@ -90,34 +91,33 @@ def enterData(creds, jobData):
     '\n{} existing work entries found. Must enter {} more for DOL compliance.'.format(entries_existing_n, entries_min - entries_existing_n)
      + colorama.Style.RESET_ALL)
   
-  # rebuild data from existing entries
-  entries_existing = []
-  for entry in entries_existing_scraped:
-    cols = entry.find_elements(By.XPATH, './child::*')
-    date_raw = cols[0].text
-    summary_raw = cols[2].text.split('\n')
-    summary = {}
-    summary['Date of Work Search'] = pd.to_datetime(date_raw, format='%m/%d/%Y')
-    for i in summary_raw:
-      i = i.split(':')
-      summary[i[0]] = i[1]
-    entries_existing.append(summary)
+    # rebuild data from existing entries
+    for entry in entries_existing_scraped:
+      cols = entry.find_elements(By.XPATH, './child::*')
+      date_raw = cols[0].text
+      summary_raw = cols[2].text.split('\n')
+      summary = {}
+      summary['Date of Work Search'] = pd.to_datetime(date_raw, format='%m/%d/%Y')
+      for i in summary_raw:
+        i = i.split(':')
+        summary[i[0]] = i[1]
+      entries_existing.append(summary)
 
   # filter out any excel job data days that already have a matching existing entry on the Work Search Summary page
   # doesn't account for when excel job and existing entry are the same job application but some column data is different (i.e. user retroactively added an email to excel job)
   # this is done by comparing cleaned dictionaries
   # clean existing entry dicts of empty values
   # entries_existing_keys = [[] for i in range(len(entries_existing))]
-  i = 0
-  for entry in entries_existing:
-    keys_mark = []
-    for key in entry: # mark keys of empty values
-      if(entry[key] == ''):
-        keys_mark.append(key)
-    for key in keys_mark: # delete key value pairs
-      del entry[key]
-    # entries_existing_keys[i] = list(entries_existing[0])
-    # i += 1
+  # i = 0
+  # for entry in entries_existing:
+  #   keys_mark = []
+  #   for key in entry: # mark keys of empty values
+  #     if(entry[key] == ''):
+  #       keys_mark.append(key)
+  #   for key in keys_mark: # delete key value pairs
+  #     del entry[key]
+  #   # entries_existing_keys[i] = list(entries_existing[0])
+  #   # i += 1
     
   # clean excel jobs rows and convert them to dicts
   jobData_toCompare = []
