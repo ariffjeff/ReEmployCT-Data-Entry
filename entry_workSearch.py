@@ -41,7 +41,7 @@ def questionnaire(driver, timeout=0):
       break
 
 
-def workSearch(driver, jobData_day):
+def enterWorkSearch(driver, jobData_day):
   ############################
   # Work Search Record Details
   ############################
