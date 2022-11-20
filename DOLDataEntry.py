@@ -50,8 +50,6 @@ def main():
     index_NaT = table_jobs.loc[pd.isna(table_jobs["Date of Work Search"]), :].index # get array of indices of rows where data is of None/NaN/NaT
     table_jobs = table_jobs.drop(table_jobs.index[index_NaT]) # drop rows
 
-    # ask user which week (sunday - saturday) they want to enter data for
-
     # isolate rows of target week
     today = datetime.date.today()
     idx = (today.weekday() + 1) % 7 # SUN = 0 ... SAT = 6
