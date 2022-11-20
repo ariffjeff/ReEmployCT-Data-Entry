@@ -51,8 +51,10 @@ def start_driver(site):
 
 def wait_for_page(driver, targetIDs):
     '''
+    Constantly wait for a page to be loaded which has an ID that is any one of the IDs in a given array.
+    This effectively allows the user to use the website without the script interrupting.
     Some pages have a unique screen ID which is shown in the top right corner.
-    This ID can be conveniently used to check which page is current, and thus be abused to wait for user input.
+    This ID can be conveniently used to check which page is current, and thus be abused to effectively wait for user input.
 
     Arguments:
         driver : webdriver obj
