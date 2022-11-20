@@ -180,8 +180,7 @@ def enterData(creds, jobData):
     "\n(Job: {}/{}) Entering data: {} - {}".format(entries_existing_n + 1, entries_min, jobRow['Employer Name'], jobRow['Position Applied For'])
     + colorama.Style.RESET_ALL)
     if(entries_existing_n > 0): # different page layout when existing entries are present
-      # scroll to bottom of page to reveal button since many entries will push button out of view
-      driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+      m_driver.ScrollPage.BOTTOM(driver) # scroll to bottom of page to reveal button since many entries will push button out of view
       m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
     entry_workSearch.main(driver, jobRow)
     entries_existing_n += 1

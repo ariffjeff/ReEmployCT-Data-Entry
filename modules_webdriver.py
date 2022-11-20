@@ -48,3 +48,10 @@ def start_driver(site):
     driver.get(site)
     driver.maximize_window()
     return driver
+
+class ScrollPage:
+    def TOP(driver):
+        driver.execute_script("window.scrollTo(0, 0);")
+
+    def BOTTOM(driver):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
