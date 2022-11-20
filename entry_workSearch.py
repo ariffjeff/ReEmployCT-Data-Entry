@@ -9,6 +9,7 @@ from selenium.common.exceptions import TimeoutException
 import modules_webdriver as m_driver
 import usaddress
 import stateDictionary as states
+import colorama
 
 def questionnaire(driver, timeout=0):
   ###########################
@@ -115,6 +116,13 @@ def enterWorkSearch(driver, jobData_day):
   m_driver.wait_find_element(driver, By.ID, 'resultFlag_1', forceDelay=0.3).click() # Result - Application/Resume Filed But Not Hired
 
   driver.find_element(by=By.ID, value='method__3').click() # Next
+
+  # check if still on entry page (probably b/c data entry error) since clicking Next was denied by site
+  screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId').text
+  if(screenID == 'WC-802'):
+    print(colorama.Fore.RED + "\nFailed to create Work Search entry!\nFix any errors on the page (as well as in the excel job file), then click Next." + colorama.Style.RESET_ALL)
+    m_driver.wait_for_page(driver, ['WC-806']) # Wait for Work Search Summary page
+
 
 # if __name__ == "__main__":
 #   main(webdriver.Firefox(), )
