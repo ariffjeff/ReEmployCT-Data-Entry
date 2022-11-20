@@ -10,10 +10,6 @@ import modules_webdriver as m_driver
 import usaddress
 import stateDictionary as states
 
-############################
-# Work Search Record Details
-############################
-
 def questionnaire(driver, timeout=0):
   ###########################
   # Work Search Questionnaire
@@ -46,6 +42,10 @@ def questionnaire(driver, timeout=0):
 
 
 def workSearch(driver, jobData_day):
+  ############################
+  # Work Search Record Details
+  ############################
+  
   # work search type dropdown - employer contact
   m_driver.wait_find_element(driver, By.ID, 'j_id_46_label', 120, forceDelay=0.3).click() # Type of Work Search - Dropdown
   driver.find_element(by=By.ID, value='j_id_46_1').click() # Type of Work Search - Employer Contact
