@@ -82,14 +82,14 @@ def enterData(creds, jobData):
       break
   
   wrangle = wrangle_job_data.main(driver, jobData)
-  jobData = wrangle.jobData
+  jobData = wrangle['jobData']
 
   # error if user doesn't have enough unique jobs to match minimum compliance 
-  if(len(jobData) < wrangle.entries_min - wrangle.entries_existing_n):
+  if(len(jobData) < wrangle['entries_min'] - wrangle['entries_existing_n']):
     print(colorama.Fore.RED)
     print("Not enough jobs found in excel file to enter for target week!")
     print("{} jobs available to enter that aren't duplicates of any existing entries.".format(len(jobData)))
-    print("You must enter at least {} more jobs into the excel file for the target week.".format(wrangle.entries_min - wrangle.entries_existing_n) + colorama.Style.RESET_ALL)
+    print("You must enter at least {} more jobs into the excel file for the target week.".format(wrangle['entries_min'] - wrangle['entries_existing_n']) + colorama.Style.RESET_ALL)
     print(colorama.Fore.GREEN + "If you do not need to look at the existing entries, quit the browser." + colorama.Style.RESET_ALL)
     # quit when user closes browser
     try:
@@ -99,16 +99,16 @@ def enterData(creds, jobData):
       return driver
 
   # enter job data
-  while(wrangle.entries_existing_n < wrangle.entries_min):
-    jobRow = jobData.iloc[wrangle.entries_existing_n]
+  while(wrangle['entries_existing_n'] < wrangle['entries_min']):
+    jobRow = jobData.iloc[wrangle['entries_existing_n']]
     print(colorama.Fore.GREEN +
-    "\n(Job: {}/{}) Entering data: {} - {}".format(wrangle.entries_existing_n + 1, wrangle.entries_min, jobRow['Employer Name'], jobRow['Position Applied For'])
+    "\n(Job: {}/{}) Entering data: {} - {}".format(wrangle['entries_existing_n'] + 1, wrangle['entries_min'], jobRow['Employer Name'], jobRow['Position Applied For'])
     + colorama.Style.RESET_ALL)
-    if(wrangle.entries_existing_n > 0): # different page layout when existing entries are present
+    if(wrangle['entries_existing_n'] > 0): # different page layout when existing entries are present
       m_driver.ScrollPage.BOTTOM(driver) # scroll to bottom of page to reveal button since many entries will push button out of view
       m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
-    entry_workSearch.main(driver, jobRow)
-    wrangle.entries_existing_n += 1
+    entry_workSearch.workSearch(driver, jobRow)
+    wrangle['entries_existing_n'] += 1
 
   #####################
   # Work Search Summary
