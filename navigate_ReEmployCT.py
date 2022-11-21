@@ -71,82 +71,80 @@ def navigate(creds, jobData):
   # detect Work Search Questionnaire page (site detects that work search job entries have not yet been finally submitted for the week)
   # if the work search job entries have already been submitted (as in user can't go back and edit them) then the website auto redirects to weekly certification
   screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId').text
-  if(screenID != 'WC-800'):
-    ##############################
-    # Weekly Certification Details
-    ##############################
+  if(screenID == 'WC-800'): # Work Search Questionnaire page
+    entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
 
-    entry_weeklyCertification.main(driver)
+    wrangle = wrangle_job_data.main(driver, jobData)
+    jobData = wrangle['jobData']
+
+    # error if user doesn't have enough unique jobs to match minimum compliance 
+    if(len(jobData) < wrangle['entries_min'] - wrangle['entries_existing_n']):
+      print(colorama.Fore.RED)
+      print("Not enough jobs found in excel file to enter for target week!")
+      print("{} jobs available to enter that aren't duplicates of any existing entries.".format(len(jobData)))
+      print("You must enter at least {} more jobs into the excel file for the target week.".format(wrangle['entries_min'] - wrangle['entries_existing_n']) + colorama.Style.RESET_ALL)
+      print(colorama.Fore.GREEN + "If you do not need to look at the existing entries, quit the browser." + colorama.Style.RESET_ALL)
+      # quit when user closes browser
+      try:
+        # look for non existent element to hold page (exception raised when user closes browser)
+        m_driver.wait_find_element(driver, By.ID, 'nothingnullnothingnullnothingnull', 60 * 60, silentPrint=True)
+      except:
+        return driver
+
+    # enter job data
+    jobRow_i = 0
+    while(wrangle['entries_existing_n'] < wrangle['entries_min']):
+      jobRow = jobData.iloc[jobRow_i]
+      print(colorama.Fore.GREEN +
+      "\n(Job: {}/{}) Entering data: {} - {}".format(wrangle['entries_existing_n'] + 1, wrangle['entries_min'], jobRow['Employer Name'], jobRow['Position Applied For'])
+      + colorama.Style.RESET_ALL)
+      if(wrangle['entries_existing_n'] > 0): # different page layout when existing entries are present
+        m_driver.ScrollPage.BOTTOM(driver) # scroll to bottom of page to reveal button since many entries will push button out of view
+        m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
+      entry_workSearch.enterWorkSearch(driver, jobRow)
+      wrangle['entries_existing_n'] += 1
+      jobRow_i += 1
+
+    #####################
+    # Work Search Summary
+    #####################
+
+    print("\n" + colorama.Fore.GREEN
+      + "*"*89
+      + "\n"
+      + "Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart the program."
+      + "\n"
+      + "*"*89
+      + colorama.Style.RESET_ALL + "\n")
 
     #############################################################
     # Weekly Certification and Work Search Record Acknowledgement
     #############################################################
 
-    m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(creds.ssn_last4) # SSN last 4 digits
-    driver.find_element(by=By.ID, value='method__1').click() # Submit
+    m_driver.wait_find_element(driver, By.ID, 'esignature', timeout= -1, silentPrint=True).send_keys(SSN_LAST4) # SSN last 4 digits
+    driver.find_element(by=By.ID, value='method__2').click() # Next
 
-    return driver
+    ######################################################
+    # Please click the button to file weekly certification
+    ######################################################
 
-  entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
+    m_driver.wait_find_element(driver, By.ID, 'method').click() # File Weekly Certification
 
-  wrangle = wrangle_job_data.main(driver, jobData)
-  jobData = wrangle['jobData']
+  ###################################
+  # Weekly Certification Confirmation
+  ###################################
 
-  # error if user doesn't have enough unique jobs to match minimum compliance 
-  if(len(jobData) < wrangle['entries_min'] - wrangle['entries_existing_n']):
-    print(colorama.Fore.RED)
-    print("Not enough jobs found in excel file to enter for target week!")
-    print("{} jobs available to enter that aren't duplicates of any existing entries.".format(len(jobData)))
-    print("You must enter at least {} more jobs into the excel file for the target week.".format(wrangle['entries_min'] - wrangle['entries_existing_n']) + colorama.Style.RESET_ALL)
-    print(colorama.Fore.GREEN + "If you do not need to look at the existing entries, quit the browser." + colorama.Style.RESET_ALL)
-    # quit when user closes browser
-    try:
-      # look for non existent element to hold page (exception raised when user closes browser)
-      m_driver.wait_find_element(driver, By.ID, 'nothingnullnothingnullnothingnull', 60 * 60, silentPrint=True)
-    except:
-      return driver
+  #######################################
+  # Weekly Certification Details - WC-004
+  #######################################
 
-  # enter job data
-  jobRow_i = 0
-  while(wrangle['entries_existing_n'] < wrangle['entries_min']):
-    jobRow = jobData.iloc[jobRow_i]
-    print(colorama.Fore.GREEN +
-    "\n(Job: {}/{}) Entering data: {} - {}".format(wrangle['entries_existing_n'] + 1, wrangle['entries_min'], jobRow['Employer Name'], jobRow['Position Applied For'])
-    + colorama.Style.RESET_ALL)
-    if(wrangle['entries_existing_n'] > 0): # different page layout when existing entries are present
-      m_driver.ScrollPage.BOTTOM(driver) # scroll to bottom of page to reveal button since many entries will push button out of view
-      m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
-    entry_workSearch.enterWorkSearch(driver, jobRow)
-    wrangle['entries_existing_n'] += 1
-    jobRow_i += 1
-
-  #####################
-  # Work Search Summary
-  #####################
-
-  print("\n" + colorama.Fore.GREEN
-    + "*"*89
-    + "\n"
-    + "Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart the program."
-    + "\n"
-    + "*"*89
-    + colorama.Style.RESET_ALL + "\n")
+  entry_weeklyCertification.main(driver)
 
   #############################################################
   # Weekly Certification and Work Search Record Acknowledgement
   #############################################################
 
-  m_driver.wait_find_element(driver, By.ID, 'esignature', timeout= -1, silentPrint=True).send_keys(SSN_LAST4) # SSN last 4 digits
-  driver.find_element(by=By.ID, value='method__2').click() # Next
-
-  ######################################################
-  # Please click the button to file weekly certification
-  ######################################################
-
-  m_driver.wait_find_element(driver, By.ID, 'method').click() # File Weekly Certification
-
-  ###################################
-  # Weekly Certification Confirmation
-  ###################################
+  m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(creds.ssn_last4) # SSN last 4 digits
+  driver.find_element(by=By.ID, value='method__1').click() # Submit
 
   return driver
