@@ -31,9 +31,8 @@ def wait_find_element(driver, byType, elementID, timeout=20, forceDelay=0, silen
     except TimeoutException:
         print(colorama.Fore.RED + "Timed out!")
         print("Either an intentional time out or not able to get a page element because it doesn't exist / page loading took too much time!" + colorama.Style.RESET_ALL)
-        print("Quitting.")
     except:
-        print("Something went wrong when trying to find a page element. Quitting.")
+        print("Something went wrong when trying to find a page element.")
 
 def print_solveCaptcha(timeout):
     print("\n" + colorama.Fore.GREEN
