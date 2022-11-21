@@ -130,10 +130,6 @@ def navigate(creds, jobData):
 
     m_driver.wait_find_element(driver, By.ID, 'method').click() # File Weekly Certification
 
-  #######################################
-  # Weekly Certification Details - WC-004
-  #######################################
-
   # check if SUC-002 page is loaded (weekly certification already submitted)
   screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId').text
   if(screenID != 'SUC-002'): # No Weeks are pending for the entered SSN.

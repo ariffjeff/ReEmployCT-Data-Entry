@@ -9,6 +9,10 @@ from selenium.common.exceptions import TimeoutException
 import modules_webdriver as m_driver
 
 def main(driver):
+  #######################################
+  # Weekly Certification Details - WC-004
+  #######################################
+
   # Were you physically able to work full time?
   m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[1]/td[5]/table/tbody/tr/td[1]/div/div[2]').click()
   # Were you available for full time work?
