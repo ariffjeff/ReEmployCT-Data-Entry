@@ -130,10 +130,6 @@ def navigate(creds, jobData):
 
     m_driver.wait_find_element(driver, By.ID, 'method').click() # File Weekly Certification
 
-  ###################################
-  # Weekly Certification Confirmation
-  ###################################
-
   #######################################
   # Weekly Certification Details - WC-004
   #######################################
