@@ -122,20 +122,19 @@ def navigate(creds, jobData):
   # Work Search Summary
   #####################
 
-  inputTimeout = 60 * 10
   print("\n" + colorama.Fore.GREEN
-    + "**"*41
+    + "*"*89
     + "\n"
-    + "Review all entries to ensure correctness, then Submit. " + str(inputTimeout) + " seconds until timeout."
+    + "Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart the program."
     + "\n"
-    + "**"*41
+    + "*"*89
     + colorama.Style.RESET_ALL + "\n")
 
   #############################################################
   # Weekly Certification and Work Search Record Acknowledgement
   #############################################################
 
-  m_driver.wait_find_element(driver, By.ID, 'esignature', timeout=inputTimeout, silentPrint=True).send_keys(SSN_LAST4) # SSN last 4 digits
+  m_driver.wait_find_element(driver, By.ID, 'esignature', timeout= -1, silentPrint=True).send_keys(SSN_LAST4) # SSN last 4 digits
   driver.find_element(by=By.ID, value='method__2').click() # Next
 
   ######################################################
