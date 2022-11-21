@@ -8,13 +8,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import time
 import colorama
+import math
 
 def wait_find_element(driver, byType, elementID, timeout=20, forceDelay=0, silentPrint=False):
     '''
     Wait for a page element to be viewable and then get it.
-    Timeout waiting after a set amount of time if element never can be found (doesn't appear).
+    Timeout waiting after a set amount of time if element never can be found (doesn't appear). -1 = never time out.
     Force a delay before looking for an element to prevent cases where finding an element (and then performing an action on it) too quickly can cause unexpected element behaviour.
     '''
+    # never time out
+    if(timeout < 0):
+        timeout = math.inf
     if(forceDelay > 0):
         time.sleep(forceDelay)
     try:
