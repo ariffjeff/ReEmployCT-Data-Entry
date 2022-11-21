@@ -107,8 +107,9 @@ def navigate(creds, jobData):
       return driver
 
   # enter job data
+  jobRow_i = 0
   while(wrangle['entries_existing_n'] < wrangle['entries_min']):
-    jobRow = jobData.iloc[wrangle['entries_existing_n']]
+    jobRow = jobData.iloc[jobRow_i]
     print(colorama.Fore.GREEN +
     "\n(Job: {}/{}) Entering data: {} - {}".format(wrangle['entries_existing_n'] + 1, wrangle['entries_min'], jobRow['Employer Name'], jobRow['Position Applied For'])
     + colorama.Style.RESET_ALL)
@@ -117,6 +118,7 @@ def navigate(creds, jobData):
       m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
     entry_workSearch.enterWorkSearch(driver, jobRow)
     wrangle['entries_existing_n'] += 1
+    jobRow_i += 1
 
   #####################
   # Work Search Summary
