@@ -28,10 +28,10 @@ def main(driver):
   # Did you receive dismissal pay(such as severance pay, vacation pay,etc.) or workers compensation benefits, not previously reported to the Labor Department?
   driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/table[4]/tbody/tr[1]/td[5]/table/tbody/tr/td[2]/div/div[2]').click()
 
-  m_driver.wait_find_element(driver, By.ID, 'method__1').click() # Next
+  # m_driver.wait_find_element(driver, By.ID, 'method__1').click() # Next
 
   #######################################
   # Verify Weekly Certification Responses
   #######################################
 
-  m_driver.wait_find_element(driver, By.ID, 'method__2').click() # Next
+  # m_driver.wait_find_element(driver, By.ID, 'method__2').click() # Next

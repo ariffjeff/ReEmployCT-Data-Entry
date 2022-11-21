@@ -136,9 +136,19 @@ def navigate(creds, jobData):
 
   entry_weeklyCertification.main(driver)
 
-  #############################################################
-  # Weekly Certification and Work Search Record Acknowledgement
-  #############################################################
+  print("\n" + colorama.Fore.GREEN
+    + "*"*67
+    + "\n"
+    + "Review all entries to ensure correctness, then go to the next page."
+    + "\n"
+    + "*"*67
+    + colorama.Style.RESET_ALL + "\n")
+
+  m_driver.wait_find_element(driver, By.ID, 'method__2', timeout= -1, silentPrint=True).click() # Next
+
+  ######################################################################
+  # Weekly Certification and Work Search Record Acknowledgement - WC-010
+  ######################################################################
 
   m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(creds.ssn_last4) # SSN last 4 digits
   driver.find_element(by=By.ID, value='method__1').click() # Submit
