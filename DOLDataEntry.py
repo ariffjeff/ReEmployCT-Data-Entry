@@ -91,8 +91,8 @@ def main():
         return
     
     driver = navigate_ReEmployCT.navigate(creds, target_week)
+    print(colorama.Fore.GREEN + "\nData entry finished. Quitting.\n" + colorama.Style.RESET_ALL)
     driver.quit()
-    print("Data entry finished.")
 
 if(__name__ == "__main__"):
     main()
