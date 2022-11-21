@@ -13,6 +13,7 @@ import entry_workSearch
 import entry_weeklyCertification
 import modules_webdriver as m_driver
 import wrangle_job_data
+import time
 
 def navigate(creds, jobData):
   
@@ -49,8 +50,23 @@ def navigate(creds, jobData):
   # navigate to weekly certification
   # not able to use driver.get() here since site produces error
   button_wc = m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[3]/div/div/div/ul/li[2]/a', CAPTCHA_TIMEOUT) # weekly certification dropdown, long delay since captcha solved by user
-  ActionChains(driver).move_to_element(button_wc).perform() # move mouse to dropdown (user mouse movement causes dropdown to disappear)
-  m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[3]/div/div/div/ul/li[2]/ul/li[1]/a').click() # File Weekly Certification
+  attempt = 0
+  attempt_max = 20
+  while(attempt <= attempt_max):
+    try:
+      button_wc.click()
+      m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[3]/div/div/div/ul/li[2]/ul/li[1]/a').click() # File Weekly Certification
+      break
+    except:
+      attempt += 1
+      if(attempt >= attempt_max):
+        print(colorama.Fore.RED +
+        "\nFailed to find and click on 'File Weekly Certification' button in the Weekly Certification dropdown.\nNavigate to the page manually."
+        + colorama.Style.RESET_ALL)
+        # WC-800 = Work Search Questionnaire
+        m_driver.wait_for_page(driver, ['WC-800'])
+        break
+      time.sleep(0.3) # give time between retries in case user is still moving mouse
 
   # detect Work Search Questionnaire page (site detects that work search job entries have not yet been finally submitted for the week)
   # if the work search job entries have already been submitted (as in user can't go back and edit them) then the website auto redirects to weekly certification
