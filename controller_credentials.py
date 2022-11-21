@@ -1,11 +1,11 @@
 # Creates a credential file.
 from cryptography.fernet import Fernet
-import re
 import ctypes
 import time
 import os
 import sys
 from datetime import datetime, timedelta
+import colorama
 
 class Credentials():
 
@@ -13,9 +13,18 @@ class Credentials():
         self.__username = ""
         self.__key = ""
         self.__password = ""
+        self.__ssn_last4 = ""
         self.__key_file = 'key.key'
         self.__time_of_exp = -1
 
+    def gen_key(self):
+        if(self._Credentials__key == ''):
+            self.__key = Fernet.generate_key()
+        return Fernet(self.__key)
+
+    def encrypt_value(self, value, fernetKey):
+        return fernetKey.encrypt(value.encode()).decode()
+    
 #----------------------------------------
 # Getter setter for attributes
 #----------------------------------------
@@ -25,20 +34,32 @@ class Credentials():
         return self.__username
 
     @username.setter
-    def username(self,username):
+    def username(self, username):
         while (username == ''):
             username = input('Enter a proper User name, blank is not accepted:')
         self.__username = username
 
     @property
     def password(self):
-        return self.__password
+        # return self.__password
+        return self.get_decoded_value('Password')
 
     @password.setter
-    def password(self,password):
-        self.__key = Fernet.generate_key()
-        f = Fernet(self.__key)
-        self.__password = f.encrypt(password.encode()).decode()
+    def password(self, password):
+        f = self.gen_key()
+        self.__password = self.encrypt_value(password, f)
+        del f
+    
+    @property
+    def ssn_last4(self):
+        return self.get_decoded_value('SSN_last4')
+
+    @ssn_last4.setter
+    def ssn_last4(self, ssn_last4):
+        while(len(ssn_last4) != 4 or not ssn_last4.isdigit()):
+            ssn_last4 = input("Invalid input.\nEnter last 4 digits of social security number:")
+        f = self.gen_key()
+        self.__ssn_last4 = self.encrypt_value(ssn_last4, f)
         del f
 
     @property
@@ -53,34 +74,34 @@ class Credentials():
 
     def create_cred(self):
         """
-        This function is responsible for encrypting the password and create key file for
-        storing the key and create a credential file with user name and password
+        Encrypts password.
+        Creates key file for storing the key.
+        Create credential file with user name, and encrypted password and SSN.
         """
 
-        cred_filename = 'CredFile.ini'
+        CRED_FILENAME = 'credFile.ini'
 
-        with open(cred_filename,'w') as file_in:
-            file_in.write("#Credential file:\nUsername={}\nPassword={}\nExpiry={}\n"
-            .format(self.__username,self.__password,self.__time_of_exp))
+        with open(CRED_FILENAME,'w') as file_in:
+            file_in.write("#Credentials:\nUsername={}\nPassword={}\nSSN_last4={}\nExpiry={}\n"
+            .format(self.__username, self.__password, self.__ssn_last4, self.__time_of_exp))
             file_in.write("++"*20)
 
 
-        # If there exists an older key file, This will remove it.
+        # if there exists an older key file, remove it
         if(os.path.exists(self.__key_file)):
             os.remove(self.__key_file)
 
-        # Open the Key.key file and place the key in it.
-        # The key file is hidden.
+        # open the key.key file and place the key in it
+        # the key file is hidden
         try:
-
             os_type = sys.platform
             if (os_type == 'linux'):
                 self.__key_file = '.' + self.__key_file
 
             with open(self.__key_file,'w') as key_in:
                 key_in.write(self.__key.decode())
-                # Hidding the key file.
-                # The below code snippet finds out which current os the script is running on and does the task base on it.
+                # hiding the key file
+                # the below code snippet finds out which current os the script is running on and does the task base on it
                 if(os_type == 'win32'):
                     ctypes.windll.kernel32.SetFileAttributesW(self.__key_file, 2)
                 else:
@@ -93,10 +114,11 @@ class Credentials():
 
         self.__username = ""
         self.__password = ""
+        self.__ssn_last4 = ""
         self.__key = ""
         self.__key_file
 
-    def rebuild_cred_from_file(self, cred_filename):
+    def rebuild_creds_from_file(self, cred_filename):
         '''
         Recreate credentials object from credentials file.
         '''
@@ -111,6 +133,7 @@ class Credentials():
 
         self.__username = creds['Username']
         self.__password = creds['Password']
+        self.__ssn_last4 = creds['SSN_last4']
         self.__time_of_exp = creds['Expiry']
 
     def are_creds_expired(self):
@@ -124,21 +147,28 @@ class Credentials():
             'formatted': (datetime.fromtimestamp(float(self.expiry_time))).strftime('%Y-%m-%d %H:%M:%S')
         }
     
-    def get_decoded_password(self):
-        with open("key.key", "r") as key_in:
-            key = key_in.read().encode()
+    def get_decoded_value(self, valueKey):
+        '''
+        Find the desired value from the .ini credentials file based on the given key (key value pair).
+        '''
 
-        f = Fernet(key)
-        with open('CredFile.ini', 'r') as cred_in:
+        with open("key.key", "r") as key_in:
+            encryption_key = key_in.read().encode()
+
+        f = Fernet(encryption_key)
+        with open('credFile.ini', 'r') as cred_in:
             lines = cred_in.readlines()
             config = {}
             for line in lines:
                 tuples = line.rstrip('\n').split('=', 1)
-                if tuples[0] in ('Username', 'Password'):
+                if tuples[0] == valueKey:
                     config[tuples[0]] = tuples[1]
-        
-            return f.decrypt(config['Password'].encode()).decode()
+                    return f.decrypt(config[valueKey].encode()).decode()
 
+
+def create_user_credentials():
+    print(colorama.Fore.GREEN + "\nEnter your DOL ReEmployCT credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
+    main()
 
 
 def main():
@@ -147,7 +177,8 @@ def main():
     # accepting credentials
     creds.username = input("Enter UserName:")
     creds.password = input("Enter Password:")
-    print("Enter the epiry time for key file in minutes, [default:Will never expire]")
+    creds.ssn_last4 = input("Enter last 4 digits of social security number:")
+    print("Enter the expiry time for key file in minutes, [default:Will never expire]")
     
     # unix timestamp
     expiry_minutes = float(input("Enter time:") or '-1')
@@ -163,10 +194,6 @@ def main():
     creds.create_cred()
     print("**"*20)
     print("Cred file created successfully at {}".format(time.ctime()))
-
-    if not(creds.expiry_time == -1):
-        os.startfile('expire.py')
-
     print("**"*20)
 
 if __name__ == "__main__":

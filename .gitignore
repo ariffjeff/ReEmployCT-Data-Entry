@@ -1,4 +1,7 @@
 .vscode
+__pycache__
+*.pyc
 geckodriver.log
-CredFile.ini
+credFile.ini
 key.key
+jobDataLocation.json
