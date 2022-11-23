@@ -17,10 +17,6 @@ import time
 
 def navigate(creds, jobData):
   
-  USERNAME = creds.username
-  PASSWORD = creds.password
-  SSN_LAST4 = creds.ssn_last4
-
   site = "https://reemployct.dol.ct.gov/accessct/faces/login/login_local.xhtml"
   driver = m_driver.start_driver(site)
 
@@ -32,8 +28,8 @@ def navigate(creds, jobData):
   input_password = driver.find_element(by=By.ID, value='password')
   input_username.clear()
   input_password.clear()
-  input_username.send_keys(USERNAME)
-  input_password.send_keys(PASSWORD)
+  input_username.send_keys(creds.username)
+  input_password.send_keys(creds.password)
 
   button_captcha = driver.find_element(by=By.XPATH, value='/html/body/div[3]/div[3]/form/table/tbody/tr/td/table/tbody/tr/td[3]/table/tbody/tr[6]/td/table/tbody/tr/td/div/div/div/iframe')
   button_captcha.click()
@@ -121,7 +117,7 @@ def navigate(creds, jobData):
     # Weekly Certification and Work Search Record Acknowledgement
     #############################################################
 
-    m_driver.wait_find_element(driver, By.ID, 'esignature', timeout= -1, silentPrint=True).send_keys(SSN_LAST4) # SSN last 4 digits
+    m_driver.wait_find_element(driver, By.ID, 'esignature', timeout= -1, silentPrint=True).send_keys(creds.ssn_last4) # SSN last 4 digits
     driver.find_element(by=By.ID, value='method__2').click() # Next
 
     ######################################################
