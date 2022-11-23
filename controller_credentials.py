@@ -13,7 +13,7 @@ class Credentials():
         self.__username = ""
         self.__key = ""
         self.__password = ""
-        self.__ssn_last4 = ""
+        self.__ssn = ""
         self.__key_file = 'key.key'
         self.__time_of_exp = -1
 
@@ -51,16 +51,24 @@ class Credentials():
         del f
     
     @property
-    def ssn_last4(self):
-        return self.get_decoded_value('SSN_last4')
+    def ssn(self):
+        return self.get_decoded_value('SSN')
 
-    @ssn_last4.setter
-    def ssn_last4(self, ssn_last4):
-        while(len(ssn_last4) != 4 or not ssn_last4.isdigit()):
-            ssn_last4 = input("Invalid input.\nEnter last 4 digits of social security number:")
+    @ssn.setter
+    def ssn(self, ssn):
+        def ssn_format(str):
+            return str.rstrip().replace('-', '')
+
+        ssn = ssn_format(ssn)
+        while(len(ssn) != 9 or not ssn.isdigit()):
+            ssn = ssn_format(input("Invalid input.\nEnter social security number:"))
         f = self.gen_key()
-        self.__ssn_last4 = self.encrypt_value(ssn_last4, f)
-        del f
+        self.__ssn = self.encrypt_value(ssn, f)
+        del f, ssn
+
+    @property
+    def ssn_last4(self):
+        return self.ssn[-4:]
 
     @property
     def expiry_time(self):
@@ -82,8 +90,8 @@ class Credentials():
         CRED_FILENAME = 'credFile.ini'
 
         with open(CRED_FILENAME,'w') as file_in:
-            file_in.write("#Credentials:\nUsername={}\nPassword={}\nSSN_last4={}\nExpiry={}\n"
-            .format(self.__username, self.__password, self.__ssn_last4, self.__time_of_exp))
+            file_in.write("#Credentials:\nUsername={}\nPassword={}\nSSN={}\nExpiry={}\n"
+            .format(self.__username, self.__password, self.__ssn, self.__time_of_exp))
             file_in.write("++"*20)
 
 
@@ -114,7 +122,7 @@ class Credentials():
 
         self.__username = ""
         self.__password = ""
-        self.__ssn_last4 = ""
+        self.__ssn = ""
         self.__key = ""
         self.__key_file
 
@@ -133,7 +141,7 @@ class Credentials():
 
         self.__username = creds['Username']
         self.__password = creds['Password']
-        self.__ssn_last4 = creds['SSN_last4']
+        self.__ssn = creds['SSN']
         self.__time_of_exp = creds['Expiry']
 
     def are_creds_expired(self):
@@ -177,7 +185,7 @@ def main():
     # accepting credentials
     creds.username = input("Enter UserName:")
     creds.password = input("Enter Password:")
-    creds.ssn_last4 = input("Enter last 4 digits of social security number:")
+    creds.ssn = input("Enter social security number:")
     print("Enter the expiry time for key file in minutes, [default:Will never expire]")
     
     # unix timestamp
