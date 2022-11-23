@@ -2,6 +2,6 @@
 __pycache__
 *.pyc
 geckodriver.log
-credFile.ini
+credFile.ini*
 key.key
 jobDataLocation.json
