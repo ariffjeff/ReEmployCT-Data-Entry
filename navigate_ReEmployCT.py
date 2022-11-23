@@ -125,6 +125,8 @@ def navigate(creds, jobData):
     ######################################################
 
     m_driver.wait_find_element(driver, By.ID, 'method').click() # File Weekly Certification
+  else:
+    print(colorama.Fore.YELLOW + "\nNo weeks are pending. (no active week to enter work search data for)\n" + colorama.Style.RESET_ALL)
 
   # check if SUC-002 page is loaded (weekly certification already submitted)
   screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId').text
@@ -147,5 +149,7 @@ def navigate(creds, jobData):
 
     m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(creds.ssn_last4) # SSN last 4 digits
     driver.find_element(by=By.ID, value='method__1').click() # Submit
+  else:
+    print(colorama.Fore.YELLOW + "\nNo weeks are pending. (no active week to enter weekly certification data for)\n" + colorama.Style.RESET_ALL)
 
   return driver
