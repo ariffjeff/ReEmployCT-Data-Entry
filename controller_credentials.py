@@ -15,7 +15,7 @@ class Credentials():
         self.__password = ""
         self.__ssn = ""
         self.__key_file = 'key.key'
-        self.__time_of_exp = -1
+        self.__credentials_expiration = -1
 
     def gen_key(self):
         if(self._Credentials__key == ''):
@@ -41,7 +41,7 @@ class Credentials():
 
     @property
     def password(self):
-        return self.get_decoded_value('Password')
+        return self.get_decoded_value('password')
 
     @password.setter
     def password(self, password):
@@ -51,7 +51,7 @@ class Credentials():
     
     @property
     def ssn(self):
-        return self.get_decoded_value('SSN')
+        return self.get_decoded_value('ssn')
 
     @ssn.setter
     def ssn(self, ssn):
@@ -70,13 +70,13 @@ class Credentials():
         return self.ssn[-4:]
 
     @property
-    def expiry_time(self):
-        return self.__time_of_exp
+    def credentials_expiration(self):
+        return self.__credentials_expiration
 
-    @expiry_time.setter
-    def expiry_time(self,exp_time):
+    @credentials_expiration.setter
+    def credentials_expiration(self,exp_time):
         if(exp_time >= 2):
-            self.__time_of_exp = exp_time
+            self.__credentials_expiration = exp_time
 
 
     def create_cred(self):
@@ -87,10 +87,28 @@ class Credentials():
         """
 
         CRED_FILENAME = 'credFile.ini'
+        KEYS = [
+            'username',
+            'password',
+            'ssn',
+            'credentials_expiration',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'email',
+            'mother\'s_maiden_name',
+            'date_of_birth',
+            'driver\'s_license/state_ID_number',
+            'driver\'s_license/state_ID_number_expiration'
+        ]
+
+        credStr = ''
+        for key in KEYS:
+            credStr += key + '=\n' 
 
         with open(CRED_FILENAME,'w') as file_in:
-            file_in.write("#Credentials:\nUsername={}\nPassword={}\nSSN={}\nExpiry={}\n"
-            .format(self.__username, self.__password, self.__ssn, self.__time_of_exp))
+            file_in.write("username={}\npassword={}\nssn={}\ncredentials_expiration={}\n"
+            .format(self.__username, self.__password, self.__ssn, self.__credentials_expiration))
             file_in.write("++"*20)
 
 
@@ -138,20 +156,20 @@ class Credentials():
                 if(len(tuples) == 2):
                     creds[tuples[0]] = tuples[1]
 
-        self.__username = creds['Username']
-        self.__password = creds['Password']
-        self.__ssn = creds['SSN']
-        self.__time_of_exp = creds['Expiry']
+        self.__username = creds['username']
+        self.__password = creds['password']
+        self.__ssn = creds['ssn']
+        self.__credentials_expiration = creds['credentials_expiration']
 
     def are_creds_expired(self):
-        if(self.expiry_time == '-1' or time.time() <= float(self.expiry_time)): # -1 means credentials never expire
+        if(self.credentials_expiration == '-1' or time.time() <= float(self.credentials_expiration)): # -1 means credentials never expire
             return False
         return True
     
     def expire_time(self):
         return {
-            'unix': self.expiry_time,
-            'formatted': (datetime.fromtimestamp(float(self.expiry_time))).strftime('%Y-%m-%d %H:%M:%S')
+            'unix': self.credentials_expiration,
+            'formatted': (datetime.fromtimestamp(float(self.credentials_expiration))).strftime('%Y-%m-%d %H:%M:%S')
         }
     
     def get_decoded_value(self, valueKey):
@@ -194,7 +212,7 @@ def main():
     else:
         timestamp = time.time() + expiry_minutes * 60
 
-    creds.expiry_time = timestamp
+    creds.credentials_expiration = timestamp
     
 
     # Calling the Credit
