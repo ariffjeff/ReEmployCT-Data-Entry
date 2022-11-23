@@ -41,7 +41,6 @@ class Credentials():
 
     @property
     def password(self):
-        # return self.__password
         return self.get_decoded_value('Password')
 
     @password.setter
