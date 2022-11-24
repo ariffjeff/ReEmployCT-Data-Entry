@@ -6,6 +6,7 @@ import os
 import sys
 from datetime import datetime, timedelta
 import colorama
+from getpass import getpass
 
 class Credentials():
 
@@ -60,7 +61,7 @@ class Credentials():
 
         ssn = ssn_format(ssn)
         while(len(ssn) != 9 or not ssn.isdigit()):
-            ssn = ssn_format(input("Invalid input.\nEnter social security number:"))
+            ssn = ssn_format(getpass("Invalid input.\nEnter social security number:"))
         f = self.gen_key()
         self.__ssn = self.encrypt_value(ssn, f)
         del f, ssn
@@ -201,8 +202,8 @@ def main():
 
     # accepting credentials
     creds.username = input("Enter UserName:")
-    creds.password = input("Enter Password:")
-    creds.ssn = input("Enter social security number:")
+    creds.password = getpass("Enter Password:")
+    creds.ssn = getpass("Enter social security number:")
     print("Enter the expiry time for key file in minutes, [default:Will never expire]")
     
     # unix timestamp
