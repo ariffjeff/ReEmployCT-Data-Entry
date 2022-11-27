@@ -18,6 +18,16 @@ class Credentials():
         self.__key_file = 'key.key'
         self.__credentials_expiration = -1
 
+        # weekly certification correction - https://ctdolcontactcenter.force.com/submit/s/claim-filing-and-payment
+        self.__name_first = ''
+        self.__name_last = ''
+        self.__phone_number = ''
+        self.__email = ''
+        self.__name_mothers_maiden = ''
+        self.__date_of_birth = ''
+        self.__drivers_license_state_ID_number = ''
+        self.__drivers_license_state_ID_number_expiration = ''
+
     def gen_key(self):
         if(self._Credentials__key == ''):
             self.__key = Fernet.generate_key()
@@ -79,6 +89,37 @@ class Credentials():
         if(exp_time >= 2):
             self.__credentials_expiration = exp_time
 
+    def ini_file_keys(self):
+        '''
+        Returns only the keys from __init__ that should be output to the credentials ini file
+        '''
+        KEYS_TO_OUTPUT_TO_INI_FILE = [
+            'username',
+            'password',
+            'ssn',
+            'credentials_expiration',
+            'name_first',
+            'name_last',
+            'phone_number',
+            'email',
+            'name_mothers_maiden',
+            'date_of_birth',
+            'drivers_license_state_ID_number',
+            'drivers_license_state_ID_number_expiration'
+        ]
+        return KEYS_TO_OUTPUT_TO_INI_FILE
+
+    def create_formatted_cred_output_string(self):
+        '''
+        Create formatted output string of credential key and value data for .ini file based on __init__ attribs
+        '''
+        credStr = ''
+        PREFIX = '_Credentials__'
+        for key in self.ini_file_keys():
+            if(PREFIX + key in self.__dict__): # get class' __init__ attribs
+                value = self.__dict__[PREFIX + key]
+                credStr += key + '=' + str(value) + '\n'
+        return credStr
 
     def create_cred(self):
         """
@@ -88,30 +129,10 @@ class Credentials():
         """
 
         CRED_FILENAME = 'credFile.ini'
-        KEYS = [
-            'username',
-            'password',
-            'ssn',
-            'credentials_expiration',
-            'first_name',
-            'last_name',
-            'phone_number',
-            'email',
-            'mother\'s_maiden_name',
-            'date_of_birth',
-            'driver\'s_license/state_ID_number',
-            'driver\'s_license/state_ID_number_expiration'
-        ]
-
-        credStr = ''
-        for key in KEYS:
-            credStr += key + '=\n' 
-
+        credStr = self.create_formatted_cred_output_string()
         with open(CRED_FILENAME,'w') as file_in:
-            file_in.write("username={}\npassword={}\nssn={}\ncredentials_expiration={}\n"
-            .format(self.__username, self.__password, self.__ssn, self.__credentials_expiration))
+            file_in.write(credStr)
             file_in.write("++"*20)
-
 
         # if there exists an older key file, remove it
         if(os.path.exists(self.__key_file)):
@@ -149,6 +170,7 @@ class Credentials():
         Recreate credentials object from credentials file.
         '''
 
+        # create dict from ini file keys and values
         with open(cred_filename, 'r') as cred_in:
             lines = cred_in.readlines()
             creds = {}
@@ -157,11 +179,10 @@ class Credentials():
                 if(len(tuples) == 2):
                     creds[tuples[0]] = tuples[1]
 
-        self.__username = creds['username']
-        self.__password = creds['password']
-        self.__ssn = creds['ssn']
-        self.__credentials_expiration = creds['credentials_expiration']
-
+        # assign values to mangled-name (__x) variables. vars with @property defs get their regular var equivalents updated automatically as well.
+        for key in creds:
+            setattr(self, '_{}__'.format(__class__.__name__) + key, creds[key])
+        
     def are_creds_expired(self):
         if(self.credentials_expiration == '-1' or time.time() <= float(self.credentials_expiration)): # -1 means credentials never expire
             return False
