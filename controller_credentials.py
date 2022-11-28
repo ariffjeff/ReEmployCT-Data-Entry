@@ -215,10 +215,6 @@ class Credentials():
 
 def create_user_credentials():
     print(colorama.Fore.GREEN + "\nEnter your DOL ReEmployCT credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
-    main()
-
-
-def main():
     creds = Credentials()
 
     # accepting credentials
