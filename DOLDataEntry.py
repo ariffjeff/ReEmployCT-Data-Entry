@@ -2,13 +2,13 @@ import pandas as pd
 import json
 from cryptography.fernet import Fernet
 import os
-from datetime import datetime, timedelta
 import datetime
 import navigate_ReEmployCT
 import colorama
 from selenium import webdriver
 import modules_filepaths as m_fp
 import controller_credentials as credCon
+import wrangle_job_data as wrangle
 
 def main():
     print(colorama.Fore.GREEN + "\n")
@@ -40,26 +40,6 @@ def main():
 
 
     ###################################
-    # Job Data
-    ###################################
-
-    table_jobs = pd.read_excel(json_jobDataFilepath['filepath_jobData'])
-
-    # clean table - drop rows of bad types
-    table_jobs['Date of Work Search'] = table_jobs['Date of Work Search'].apply(lambda x: pd.to_datetime(x, errors='coerce')) # sets bad values to None/NaN/NaT for easy parsing
-    index_NaT = table_jobs.loc[pd.isna(table_jobs["Date of Work Search"]), :].index # get array of indices of rows where data is of None/NaN/NaT
-    table_jobs = table_jobs.drop(table_jobs.index[index_NaT]) # drop rows
-
-    # isolate rows of target week
-    today = datetime.date.today()
-    idx = (today.weekday() + 1) % 7 # SUN = 0 ... SAT = 6
-    last_week_start = pd.Timestamp(today - timedelta(7 + idx)) # sunday
-    last_week_end = pd.Timestamp(last_week_start + timedelta(6)) # saturday
-    target_days = table_jobs['Date of Work Search'].between(last_week_start, last_week_end) # marks target days as True
-    target_week = table_jobs.loc[target_days == True] # isolate target week rows
-    target_week.reset_index(inplace=True)
-
-    ###################################
     # Manage User Credentials
     ###################################
 
@@ -79,18 +59,27 @@ def main():
         print("Your credentials expired on " + creds.expire_time()['formatted'])
         credCon.create_user_credentials()
 
+    ##########
+    # Job Data
+    ##########
+
+    table_jobs = pd.read_excel(json_jobDataFilepath['filepath_jobData'])
+    table_jobs = wrangle.drop_bad_rows(table_jobs)
+    last_week_day = datetime.date.today() - datetime.timedelta(7)
+    target_week = wrangle.isolate_week_from_day(table_jobs, last_week_day)
+
     ############
     # Data Entry
     ############
 
     # check if there is any job data for target week
-    if(len(target_week) == 0):
+    if(len(target_week['table_jobs']) == 0):
         print(colorama.Fore.RED +
-        "\n*** You have no days of job data to enter for the target week! ({} - {}) ***\nQuitting script.".format(last_week_start.date(), last_week_end.date())
+        "\n*** You have no days of job data to enter for the target week! ({} - {}) ***\nQuitting script.".format(target_week['day_start.date()'], target_week['day_end.date()'])
         + colorama.Style.RESET_ALL)
         return
     
-    driver = navigate_ReEmployCT.navigate(creds, target_week)
+    driver = navigate_ReEmployCT.navigate(creds, target_week['table_jobs'])
     print(colorama.Fore.GREEN + "\nData entry finished. Quitting.\n" + colorama.Style.RESET_ALL)
     driver.quit()
 

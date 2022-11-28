@@ -2,6 +2,7 @@ import pandas as pd
 import colorama
 from selenium.webdriver.common.by import By
 import modules_webdriver as m_driver
+from datetime import datetime, timedelta
 
 def main(driver, jobData):
   '''
@@ -95,4 +96,28 @@ def main(driver, jobData):
     'entries_existing': entries_existing,
     'entries_min': entries_min,
     'entries_existing_n': entries_existing_n,
+  }
+
+def drop_bad_rows(df):
+  '''
+  Clean table - drop rows of bad types
+  ''' 
+  df['Date of Work Search'] = df['Date of Work Search'].apply(lambda x: pd.to_datetime(x, errors='coerce')) # sets bad values to None/NaN/NaT for easy parsing
+  index_NaT = df.loc[pd.isna(df["Date of Work Search"]), :].index # get array of indices of rows where data is of None/NaN/NaT
+  return df.drop(df.index[index_NaT]) # drop rows
+
+def isolate_week_from_day(df, day_of_target_week):
+  '''
+  Isolate rows of target week
+  '''
+  day_idx = (day_of_target_week.weekday() + 1) % 7 # get day's number: SUN = 0 ... SAT = 6
+  day_start = pd.Timestamp(day_of_target_week - timedelta(day_idx)) # sunday
+  day_end = pd.Timestamp(day_start + timedelta(6)) # saturday
+  target_days = df['Date of Work Search'].between(day_start, day_end) # marks target days as True
+  df = df.loc[target_days == True] # isolate target week rows
+  df.reset_index(inplace=True)
+  return {
+    'table_jobs': df,
+    'day_start': day_start,
+    'day_end': day_end
   }
