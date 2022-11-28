@@ -108,7 +108,7 @@ def drop_bad_rows(df):
 
 def isolate_week_from_day(df, day_of_target_week):
   '''
-  Isolate rows of target week
+  Isolate the rows of a week of job data from a pandas data frame based on a chosen day of a week
   '''
   day_idx = (day_of_target_week.weekday() + 1) % 7 # get day's number: SUN = 0 ... SAT = 6
   day_start = pd.Timestamp(day_of_target_week - timedelta(day_idx)) # sunday
