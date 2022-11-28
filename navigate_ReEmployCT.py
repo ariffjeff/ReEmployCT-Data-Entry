@@ -43,7 +43,7 @@ def navigate(creds, jobData):
   # Home Page
   ###########
 
-  # navigate to weekly certification
+  # navigate to weekly work search / certification
   # not able to use driver.get() here since site produces error
   button_wc = m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[3]/div/div/div/ul/li[2]/a', CAPTCHA_TIMEOUT) # weekly certification dropdown, long delay since captcha solved by user
   attempt = 0
