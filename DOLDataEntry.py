@@ -65,8 +65,7 @@ def main():
 
     table_jobs = pd.read_excel(json_jobDataFilepath['filepath_jobData'])
     table_jobs = wrangle.drop_bad_rows(table_jobs)
-    last_week_day = datetime.date.today() - datetime.timedelta(7)
-    target_week = wrangle.isolate_week_from_day(table_jobs, last_week_day)
+    target_week = wrangle.isolate_week_from_day(table_jobs,  datetime.date.today() - datetime.timedelta(7)) # last week
 
     ############
     # Data Entry
