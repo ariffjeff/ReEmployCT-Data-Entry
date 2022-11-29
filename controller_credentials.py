@@ -240,4 +240,4 @@ def create_user_credentials():
     print("**"*20)
 
 if __name__ == "__main__":
-    main()
+    create_user_credentials()
