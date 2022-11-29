@@ -121,3 +121,14 @@ def isolate_week_from_day(df, day_of_target_week):
     'day_start': day_start,
     'day_end': day_end
   }
+
+def target_week_has_job_data(target_week):
+  '''
+  check if there is any job data for target week
+  '''
+  if(len(target_week['table_jobs']) == 0):
+      print(colorama.Fore.RED +
+      "\n*** You have no days of job data to enter for the target week! ({} - {}) ***\nQuitting script.".format(target_week['day_start.date()'], target_week['day_end.date()'])
+      + colorama.Style.RESET_ALL)
+      return False
+  return True

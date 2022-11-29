@@ -71,11 +71,7 @@ def main():
     # Data Entry
     ############
 
-    # check if there is any job data for target week
-    if(len(target_week['table_jobs']) == 0):
-        print(colorama.Fore.RED +
-        "\n*** You have no days of job data to enter for the target week! ({} - {}) ***\nQuitting script.".format(target_week['day_start.date()'], target_week['day_end.date()'])
-        + colorama.Style.RESET_ALL)
+    if not wrangle.target_week_has_job_data(target_week):
         return
     
     driver = navigate_ReEmployCT.navigate(creds, target_week['table_jobs'])
