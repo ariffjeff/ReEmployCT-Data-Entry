@@ -98,7 +98,7 @@ def wait_for_page_by_screenID(driver, screenID, timeout=math.inf, forceDelay=0, 
     if(forceDelay > 0):
         time.sleep(forceDelay)
     try:
-        if(not silentPrint): print("Waiting for page  to render: {}".format(screenID))
+        if(not silentPrint): print("Waiting for page to render: {}".format(screenID))
         element = WebDriverWait(driver, timeout).until(EC.text_to_be_present_in_element((By.ID, 'templateDivScreenId'), screenID))
         return element
     except TimeoutException:
