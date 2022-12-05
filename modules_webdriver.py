@@ -54,6 +54,8 @@ def start_driver(site):
 
 def wait_for_pages_by_screenID(driver, screenIDs):
     '''
+    An expensive solution that Selenium might not have a simple WebDriverWait solution for.
+    
     Constantly wait for a page to be loaded which has an ID that is any one of the IDs in a given array.
     This effectively allows the user to use the website without the script interrupting.
     Some pages have a unique screen ID which is shown in the top right corner.
