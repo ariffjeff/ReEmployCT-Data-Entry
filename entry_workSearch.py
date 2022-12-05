@@ -32,7 +32,7 @@ def questionnaire(driver, timeout=0):
   # screenID = m_driver.waitGetElement(driver, By.ID, 'templateDivScreenId', 240, forceDelay=.5).text # wait for specific page
 
   # force wait until on either work search page
-  # WC-802 = Work Search Record Details (no previous work entries present), WC-806 = Work Search Summary (one or more previous work entries present)
+  # WC-802 = Work Search Record Details (the entry form) (auto loaded first if no previous work entries present), WC-806 = Work Search Summary (one or more previous work entries present)
   m_driver.wait_for_page_by_screenID(driver, 'WC-802')
 
 
