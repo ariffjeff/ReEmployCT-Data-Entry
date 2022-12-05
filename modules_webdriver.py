@@ -77,6 +77,22 @@ def wait_for_page(driver, targetIDs):
         except:
             break
 
+def wait_for_page_by_screenID(driver, screenID, timeout=20, forceDelay=0, silentPrint=False):
+    ''' Wait until a page with a specific screenID is loaded (HTML element ID: )'''
+    # never time out
+    if(timeout < 0):
+        timeout = math.inf
+    if(forceDelay > 0):
+        time.sleep(forceDelay)
+    try:
+        if(not silentPrint): print("Waiting for page  to render: {}".format(screenID))
+        element = WebDriverWait(driver, timeout).until(EC.text_to_be_present_in_element((By.ID, 'templateDivScreenId'), screenID))
+        return element
+    except TimeoutException:
+        print(colorama.Fore.RED + "Timed out!")
+        print("Either an intentional time out or not able to get a page element because it doesn't exist / page loading took too much time!" + colorama.Style.RESET_ALL)
+    except:
+        print("Something went wrong when trying to find a page element.")
 
 class ScrollPage:
     def TOP(driver):
