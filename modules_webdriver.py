@@ -78,7 +78,21 @@ def wait_for_page(driver, targetIDs):
             break
 
 def wait_for_page_by_screenID(driver, screenID, timeout=math.inf, forceDelay=0, silentPrint=False):
-    ''' Wait until a page with a specific screenID is loaded (HTML element ID: templateDivScreenId). Never timesout by default.'''
+    '''
+    Wait until a page with a specific screenID is loaded (HTML element ID: templateDivScreenId). Never timesout by default.
+
+    Arguments:
+        driver : webdriver obj
+            the webdriver object
+        screenID : str obj
+            the page's screenID to check for
+        timeout : int obj
+            the time it takes to receive an exception timeout if the page with the screenID could not be found
+        forceDelay : int obj
+            sleep before performing the wait. useful for not wanting to find an element too quickly in some situations
+        silentPrint : bool obj
+            if True, do not print a log about looking for the page before doing the wait.
+    '''
     if(forceDelay > 0):
         time.sleep(forceDelay)
     try:

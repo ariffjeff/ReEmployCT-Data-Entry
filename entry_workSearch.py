@@ -33,7 +33,7 @@ def questionnaire(driver, timeout=0):
 
   # force wait until on either work search page
   # WC-802 = Work Search Record Details (no previous work entries present), WC-806 = Work Search Summary (one or more previous work entries present)
-  m_driver.wait_for_page(driver, ['WC-802', 'WC-806'])
+  m_driver.wait_for_page_by_screenID(driver, 'WC-802')
 
 
 def enterWorkSearch(driver, jobData_day):
@@ -121,7 +121,7 @@ def enterWorkSearch(driver, jobData_day):
   screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId', forceDelay=0.4).text
   if(screenID == 'WC-802'): # WC-802 = Work Search Record Details
     print(colorama.Fore.RED + "\nFailed to create Work Search entry!\nFix any errors on the page (as well as in the excel job file), then click Next." + colorama.Style.RESET_ALL)
-    m_driver.wait_for_page(driver, 'WC-806') # Wait for Work Search Summary page
+    m_driver.wait_for_page_by_screenID(driver, 'WC-806') # Wait for Work Search Summary page
 
 
 # if __name__ == "__main__":
