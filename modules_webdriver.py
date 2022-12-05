@@ -52,7 +52,7 @@ def start_driver(site):
     driver.maximize_window()
     return driver
 
-def wait_for_page(driver, targetIDs):
+def wait_for_pages_by_screenID(driver, screenIDs):
     '''
     Constantly wait for a page to be loaded which has an ID that is any one of the IDs in a given array.
     This effectively allows the user to use the website without the script interrupting.
@@ -62,17 +62,17 @@ def wait_for_page(driver, targetIDs):
     Arguments:
         driver : webdriver obj
             the webdriver object
-        targetIDs : str array
+        screenIDs : str array
             the array of screenIDs to check for
     '''
 
-    if(not isinstance(targetIDs, list)):
-        targetIDs = [targetIDs]
+    if(not isinstance(screenIDs, list) or len(screenIDs) <= 1):
+        raise Exception("screenIDs argument must be an array of more than one screenIDs.")
 
     while(True):
         try:
             screenID = driver.find_element(By.ID, 'templateDivScreenId').text
-            if(screenID in targetIDs):
+            if(screenID in screenIDs):
                 break
         except:
             break

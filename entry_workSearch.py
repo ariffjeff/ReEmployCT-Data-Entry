@@ -33,7 +33,7 @@ def questionnaire(driver, timeout=0):
 
   # force wait until on either work search page
   # WC-802 = Work Search Record Details (the entry form) (auto loaded first if no previous work entries present), WC-806 = Work Search Summary (one or more previous work entries present)
-  m_driver.wait_for_page_by_screenID(driver, 'WC-802')
+  m_driver.wait_for_pages_by_screenID(driver, ['WC-802', 'WC-806'])
 
 
 def enterWorkSearch(driver, jobData_day):
