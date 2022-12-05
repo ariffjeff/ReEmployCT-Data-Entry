@@ -26,7 +26,7 @@ def wait_find_element(driver, byType, elementID, timeout=20, forceDelay=0, silen
         if(not silentPrint): print("Waiting for page to render " + byType + " element: " + elementID)
         element = WebDriverWait(driver, timeout).until(EC.presence_of_element_located((byType, elementID)))
         seconds = str(int(time.time() - start))
-        if(not silentPrint): print(byType + " element found after " + seconds + " seconds.")
+        print(byType + " element found after " + seconds + " seconds. ({})".format(elementID)) # ignore silentPrint request since printing is ok after wait
         return element
     except TimeoutException:
         print(colorama.Fore.RED + "Timed out!")
