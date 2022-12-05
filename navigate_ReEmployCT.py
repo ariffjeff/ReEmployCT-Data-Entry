@@ -124,6 +124,7 @@ def navigate(creds, jobData):
     # Please click the button to file weekly certification
     ######################################################
 
+    # SUC-002 ("Your work search responses have been saved. Please click the button to file weekly certification")
     m_driver.wait_find_element(driver, By.ID, 'method').click() # File Weekly Certification
   else:
     print(colorama.Fore.YELLOW + "\nNo weeks are pending. (no active week to enter work search data for)\n" + colorama.Style.RESET_ALL)
