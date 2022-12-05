@@ -144,7 +144,7 @@ def navigate(creds, jobData):
 
     # WC-301 will load if "Did you perform any work?" was set to "Yes"
     # WC-006 will load if it was set to "No"
-    m_driver.wait_for_page_by_screenID(driver, 'WC-006', timeout= -1) # Verify Weekly Certification Responses (previous page summary)
+    m_driver.wait_for_page_by_screenID(driver, 'WC-006') # Verify Weekly Certification Responses (previous page summary)
     m_driver.wait_find_element(driver, By.ID, 'method__2', silentPrint=True).click() # Next
     
     ######################################################################

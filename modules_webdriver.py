@@ -77,11 +77,8 @@ def wait_for_page(driver, targetIDs):
         except:
             break
 
-def wait_for_page_by_screenID(driver, screenID, timeout=20, forceDelay=0, silentPrint=False):
-    ''' Wait until a page with a specific screenID is loaded (HTML element ID: )'''
-    # never time out
-    if(timeout < 0):
-        timeout = math.inf
+def wait_for_page_by_screenID(driver, screenID, timeout=math.inf, forceDelay=0, silentPrint=False):
+    ''' Wait until a page with a specific screenID is loaded (HTML element ID: templateDivScreenId). Never timesout by default.'''
     if(forceDelay > 0):
         time.sleep(forceDelay)
     try:
