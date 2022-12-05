@@ -66,6 +66,9 @@ def wait_for_page(driver, targetIDs):
             the array of screenIDs to check for
     '''
 
+    if(not isinstance(targetIDs, list)):
+        targetIDs = [targetIDs]
+
     while(True):
         try:
             screenID = driver.find_element(By.ID, 'templateDivScreenId').text

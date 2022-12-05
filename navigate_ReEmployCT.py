@@ -60,7 +60,7 @@ def navigate(creds, jobData):
         "\nFailed to find and click on 'File Weekly Certification' button in the Weekly Certification dropdown.\nNavigate to the page manually."
         + colorama.Style.RESET_ALL)
         # WC-800 = Work Search Questionnaire
-        m_driver.wait_for_page(driver, ['WC-800'])
+        m_driver.wait_for_page(driver, 'WC-800')
         break
       time.sleep(0.3) # give time between retries in case user is still moving mouse
 
