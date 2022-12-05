@@ -78,13 +78,13 @@ def wait_for_any_page_by_screenID(driver, screenIDs, timeout=math.inf, forceDela
     if(forceDelay > 0):
         time.sleep(forceDelay)
 
+    if(not silentPrint): print("Waiting for any page to render: {}".format(screenIDs))
+
+    expected_conditions = []
+    for screenID in screenIDs:
+        expected_conditions.append(EC.text_to_be_present_in_element((By.ID, 'templateDivScreenId'), screenID))
+
     try:
-        if(not silentPrint): print("Waiting for any page to render: {}".format(screenIDs))
-
-        expected_conditions = []
-        for screenID in screenIDs:
-            expected_conditions.append(EC.text_to_be_present_in_element((By.ID, 'templateDivScreenId'), screenID))
-
         element = WebDriverWait(driver, timeout).until(EC.any_of(*expected_conditions))
         return element
     except TimeoutException:
@@ -109,10 +109,13 @@ def wait_for_page_by_screenID(driver, screenID, timeout=math.inf, forceDelay=0, 
         silentPrint : bool obj
             if True, do not print a log about looking for the page before doing the wait.
     '''
+    
     if(forceDelay > 0):
         time.sleep(forceDelay)
+
+    if(not silentPrint): print("Waiting for page to render: {}".format(screenID))
+
     try:
-        if(not silentPrint): print("Waiting for page to render: {}".format(screenID))
         element = WebDriverWait(driver, timeout).until(EC.text_to_be_present_in_element((By.ID, 'templateDivScreenId'), screenID))
         return element
     except TimeoutException:
