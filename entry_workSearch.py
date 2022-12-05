@@ -118,7 +118,7 @@ def enterWorkSearch(driver, jobData_day):
   driver.find_element(by=By.ID, value='method__3').click() # Next
 
   # check if still on entry page (probably b/c data entry error) since clicking Next was denied by site
-  screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId').text
+  screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId', forceDelay=0.4).text
   if(screenID == 'WC-802'): # WC-802 = Work Search Record Details
     print(colorama.Fore.RED + "\nFailed to create Work Search entry!\nFix any errors on the page (as well as in the excel job file), then click Next." + colorama.Style.RESET_ALL)
     m_driver.wait_for_page(driver, ['WC-806']) # Wait for Work Search Summary page
