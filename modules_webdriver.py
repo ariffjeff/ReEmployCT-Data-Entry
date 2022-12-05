@@ -52,7 +52,7 @@ def start_driver(site):
     driver.maximize_window()
     return driver
 
-def wait_for_pages_by_screenID(driver, screenIDs, timeout=math.inf, forceDelay=0, silentPrint=False):
+def wait_for_any_page_by_screenID(driver, screenIDs, timeout=math.inf, forceDelay=0, silentPrint=False):
     '''
     Wait for a page with a specific screenID is loaded (HTML element ID: templateDivScreenId) that is any one of the IDs in a given array. Never timesout by default.
     This effectively allows the user to use the website without the script interrupting.
