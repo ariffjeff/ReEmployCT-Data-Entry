@@ -52,11 +52,9 @@ def start_driver(site):
     driver.maximize_window()
     return driver
 
-def wait_for_pages_by_screenID(driver, screenIDs):
+def wait_for_pages_by_screenID(driver, screenIDs, timeout=math.inf, forceDelay=0, silentPrint=False):
     '''
-    An expensive solution that Selenium might not have a simple WebDriverWait solution for.
-    
-    Constantly wait for a page to be loaded which has an ID that is any one of the IDs in a given array.
+    Wait for a page with a specific screenID is loaded (HTML element ID: templateDivScreenId) that is any one of the IDs in a given array. Never timesout by default.
     This effectively allows the user to use the website without the script interrupting.
     Some pages have a unique screen ID which is shown in the top right corner.
     This ID can be conveniently used to check which page is current, and thus be abused to effectively wait for user input.
@@ -65,19 +63,35 @@ def wait_for_pages_by_screenID(driver, screenIDs):
         driver : webdriver obj
             the webdriver object
         screenIDs : str array
-            the array of screenIDs to check for
+            the array of page's screenIDs to check for
+        timeout : int obj
+            the time it takes to receive an exception timeout if the page with the screenID could not be found
+        forceDelay : int obj
+            sleep before performing the wait. useful for not wanting to find an element too quickly in some situations
+        silentPrint : bool obj
+            if True, do not print a log about looking for the page before doing the wait.
     '''
 
     if(not isinstance(screenIDs, list) or len(screenIDs) <= 1):
         raise Exception("screenIDs argument must be an array of more than one screenIDs.")
+    
+    if(forceDelay > 0):
+        time.sleep(forceDelay)
 
-    while(True):
-        try:
-            screenID = driver.find_element(By.ID, 'templateDivScreenId').text
-            if(screenID in screenIDs):
-                break
-        except:
-            break
+    try:
+        if(not silentPrint): print("Waiting for any page to render: {}".format(screenIDs))
+
+        expected_conditions = []
+        for screenID in screenIDs:
+            expected_conditions.append(EC.text_to_be_present_in_element((By.ID, 'templateDivScreenId'), screenID))
+
+        element = WebDriverWait(driver, timeout).until(EC.any_of(*expected_conditions))
+        return element
+    except TimeoutException:
+        print(colorama.Fore.RED + "Timed out!")
+        print("Either an intentional time out or not able to get a page element because it doesn't exist / page loading took too much time!" + colorama.Style.RESET_ALL)
+    except:
+        print("Something went wrong when trying to find a page element.")
 
 def wait_for_page_by_screenID(driver, screenID, timeout=math.inf, forceDelay=0, silentPrint=False):
     '''
