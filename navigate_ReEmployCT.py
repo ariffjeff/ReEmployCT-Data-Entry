@@ -142,8 +142,11 @@ def navigate(creds, jobData):
       + "*"*67
       + colorama.Style.RESET_ALL + "\n")
 
-    m_driver.wait_find_element(driver, By.ID, 'method__2', timeout= -1, silentPrint=True).click() # Next
-
+    # WC-301 will load if "Did you perform any work?" was set to "Yes"
+    # WC-006 will load if it was set to "No"
+    m_driver.wait_for_page_by_screenID(driver, 'WC-006', timeout= -1) # Verify Weekly Certification Responses (previous page summary)
+    m_driver.wait_find_element(driver, By.ID, 'method__2', silentPrint=True).click() # Next
+    
     ######################################################################
     # Weekly Certification and Work Search Record Acknowledgement - WC-010
     ######################################################################
