@@ -151,7 +151,7 @@ def navigate(creds, jobData):
     # Weekly Certification and Work Search Record Acknowledgement - WC-010
     ######################################################################
 
-    m_driver.wait_find_element(driver, By.ID, 'esignature').send_keys(creds.ssn_last4) # SSN last 4 digits
+    m_driver.wait_find_element(driver, By.ID, 'esignature', forceDelay=0.3).send_keys(creds.ssn_last4) # SSN last 4 digits
     driver.find_element(by=By.ID, value='method__1').click() # Submit
   else:
     print(colorama.Fore.YELLOW + "\nNo weeks are pending. (no active week to enter weekly certification data for)\n" + colorama.Style.RESET_ALL)
