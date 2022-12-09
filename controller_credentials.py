@@ -210,6 +210,7 @@ class Credentials():
                 tuples = line.rstrip('\n').split('=', 1)
                 if tuples[0] == valueKey:
                     config[tuples[0]] = tuples[1]
+                    if(config[valueKey] == None or len(config[valueKey]) == 0): return config[valueKey] # avoid error of decrypting empty string/no value
                     return f.decrypt(config[valueKey].encode()).decode()
 
 
