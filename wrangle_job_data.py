@@ -3,6 +3,8 @@ import colorama
 from selenium.webdriver.common.by import By
 import modules_webdriver as m_driver
 from datetime import datetime, timedelta
+import usaddress
+import stateDictionary as states
 
 def main(driver, jobData):
   '''
@@ -132,3 +134,53 @@ def target_week_has_job_data(target_week):
       + colorama.Style.RESET_ALL)
       return False
   return True
+
+
+### US ADDRESSES
+
+def clean_usaddress_parse(address_parsed) -> dict:
+  '''
+  Create a cleaned up dict of the parsed result of the usaddress package.
+
+  Arguments:
+    parse : usaddress obj
+      the result of usaddress.parse(some_address)
+  '''
+  address_dict = {}
+  # rebuild similar address components into same dict elements since usaddress breaks them up by char block
+  for div in range(0, len(address_parsed)):
+    key = address_parsed[div][1]
+    if(key not in address_dict):
+      address_dict[key] = address_parsed[div][0]
+    else:
+      address_dict[key] += ' ' + address_parsed[div][0]
+    if(address_dict[key][-1] == ','): # remove trailing commas
+      address_dict[key] = address_dict[key][:-1]
+  return address_dict
+
+def state_abbrev_to_full_name(state_name) -> str:
+  '''
+  Convert US state name abbreviation to full state name
+  '''
+  STATES_DICT = states.states()
+  if(len(state_name) == 2):
+    try:
+      return STATES_DICT[state_name]
+    except:
+      raise Exception("Full state name conversion of state abbreviation could not be found.")
+  return state_name
+
+def build_address_from_cleaned_address_dict(address_dict) -> str:
+  '''
+  Rebuild street address components of the cleaned address dict from a usaddress package parse into a single string
+  '''
+  SEPARATER_KEY = 'StreetNamePostDirectional'
+  address_line_1 = ''
+  # US address components are sorted by a US standard, so loop through them to determine which dict elements to combine
+  for key in usaddress.LABELS:
+    if key in address_dict:
+      address_line_1 += address_dict[key] + ' '
+    if(key == SEPARATER_KEY):
+      address_line_1 = address_line_1.rstrip()
+      break
+  return address_line_1

@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import modules_webdriver as m_driver
 import usaddress
-import stateDictionary as states
+import wrangle_job_data as wrangle
 import colorama
 
 def questionnaire(driver, timeout=0):
@@ -62,38 +62,12 @@ def enterWorkSearch(driver, jobData_day):
 
   driver.find_element(by=By.ID, value='empName').send_keys(jobData_day['Employer Name']) # Employer Name
 
-  # Get state name or its abbreviation from jobData_day['Employer Address'] - MUST BE US ADDRESS
-  STATES_DICT = states.states()
-  # create address dictionary
+  # create dict of US address components
   address = jobData_day['Employer Address']
   address_parsed = usaddress.parse(address)
-  address_dict = {}
-  # rebuild similar address components into same dict elements since usaddress breaks them up by char block
-  for div in range(0, len(address_parsed)):
-    key = address_parsed[div][1]
-    if(key not in address_dict):
-      address_dict[key] = address_parsed[div][0]
-    else:
-      address_dict[key] += ' ' + address_parsed[div][0]
-    if(address_dict[key][-1] == ','): # remove trailing commas
-      address_dict[key] = address_dict[key][:-1]
-
-  # convert state abbreviation to full state name
-  state_name = address_dict['StateName']
-  if(len(state_name) == 2):
-    address_dict['StateName'] = STATES_DICT[state_name]
-
-  # rebuild street address components into single value
-  # US address components are sorted by standard, so loop through them to determine which dict elements to combine
-  separater_key = 'StreetNamePostDirectional'
-  address_line_1 = ''
-  for key in usaddress.LABELS:
-    if key in address_dict:
-      address_line_1 += address_dict[key] + ' '
-    if(key == separater_key):
-      address_line_1 = address_line_1.rstrip()
-      break
-
+  address_dict = wrangle.clean_usaddress_parse(address_parsed)
+  address_dict['StateName'] = wrangle.state_abbrev_to_full_name(address_dict['StateName']) # Get state name or its abbreviation - MUST BE US ADDRESS
+  address_line_1 = wrangle.build_address_from_cleaned_address_dict(address_dict)
 
   driver.find_element(by=By.ID, value='address_-address1').send_keys(address_line_1) # Address Line 1
   driver.find_element(by=By.ID, value='address_-city').send_keys(address_dict['PlaceName']) # City
