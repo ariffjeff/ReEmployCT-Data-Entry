@@ -9,13 +9,11 @@ from selenium import webdriver
 import modules_filepaths as m_fp
 import controller_credentials as credCon
 import wrangle_job_data as wrangle
+import modules_webdriver as m_driver
 
 def main():
-    print(colorama.Fore.GREEN + "\n")
-    print("-"*91)
-    print("--- Automatic unemployment benefits data entry for the U.S. DOL ReEmploy CT for Firefox ---")
-    print("-"*91)
-    print(colorama.Style.RESET_ALL + "\n")
+    msg = '--- Automatic unemployment benefits data entry for the U.S. DOL ReEmploy CT for Firefox ---'
+    m_driver.msg_user_verify_entries(msg)
 
     # create job data filepath json file if missing
     JOB_FILEPATH_JSON = "jobDataLocation.json"
