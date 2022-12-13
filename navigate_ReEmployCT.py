@@ -119,7 +119,7 @@ def navigate(creds, jobData):
     # Weekly Certification and Work Search Record Acknowledgement
     #############################################################
 
-    m_driver.wait_find_element(driver, By.ID, 'esignature', timeout= -1, silentPrint=True).send_keys(creds.ssn_last4) # SSN last 4 digits
+    m_driver.wait_find_element(driver, By.ID, 'esignature', timeout= -1, silentPrint=True, forceDelay=0.3).send_keys(creds.ssn_last4) # SSN last 4 digits
     driver.find_element(by=By.ID, value='method__2').click() # Next
 
     ######################################################
