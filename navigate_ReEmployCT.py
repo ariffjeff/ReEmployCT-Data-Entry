@@ -72,7 +72,7 @@ def navigate(creds, jobData):
   if(screenID == 'WC-800'): # Work Search Questionnaire page
     entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
 
-    wrangle = wrangle_job_data.main(driver, jobData)
+    wrangle = wrangle_job_data.sanitize(driver, jobData)
     jobData = wrangle['jobData']
 
     # error if user doesn't have enough unique jobs to match minimum compliance 

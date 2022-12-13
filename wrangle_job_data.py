@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import usaddress
 import stateDictionary as states
 
-def main(driver, jobData):
+def sanitize(driver, jobData):
   '''
   Sanitize and simplify user's excel job data.
   Only return job data that is required for satisfying ReEmployCT's work-search job entry requirements.
