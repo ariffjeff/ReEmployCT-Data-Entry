@@ -66,7 +66,9 @@ def navigate(creds, jobData):
 
   # detect Work Search Questionnaire page (site detects that work search job entries have not yet been finally submitted for the week)
   # if the work search job entries have already been submitted (as in user can't go back and edit them) then the website auto redirects to weekly certification
+  print("Looking for screenID: WC-800")
   screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId', forceDelay=0.3).text # force delay since text str doesn't load instantly
+  print("Found screenID: {}".format(screenID))
   if(screenID == 'WC-800'): # Work Search Questionnaire page
     entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
 
@@ -130,7 +132,9 @@ def navigate(creds, jobData):
     print(colorama.Fore.YELLOW + "\nNo weeks are pending. (no active week to enter work search data for)\n" + colorama.Style.RESET_ALL)
 
   # check if SUC-002 page is loaded (weekly certification already submitted)
+  print("Looking for ***NOT*** screenID: SUC-002")
   screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId', forceDelay=0.3).text # force delay since text str doesn't load instantly
+  print("Found screenID: {}".format(screenID))
   if(screenID != 'SUC-002'): # SUC-002 = No Weeks are pending for the entered SSN. (weekly cert entry not possible)
     entry_weeklyCertification.main(driver)
 
