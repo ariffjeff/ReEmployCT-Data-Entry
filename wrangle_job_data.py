@@ -118,9 +118,12 @@ def isolate_week_from_day(df, day_of_target_week):
       A datetime date object that is set to any day of a desired week
     Returns dict of isolated DataFrame, start day, and end day for the target week
   '''
+  # convert given date into SAT (0) - SUN (7) index format
   day_idx = (day_of_target_week.weekday() + 1) % 7 # get day's number: SUN = 0 ... SAT = 6
   day_start = pd.Timestamp(day_of_target_week - timedelta(day_idx)) # sunday
   day_end = pd.Timestamp(day_start + timedelta(6)) # saturday
+
+  # isolate week
   target_days = df['Date of Work Search'].between(day_start, day_end) # marks target days as True
   df = df.loc[target_days == True] # isolate target week rows
   df.reset_index(inplace=True)
