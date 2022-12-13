@@ -130,3 +130,19 @@ class ScrollPage:
 
     def BOTTOM(driver):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+def msg_user_verify_entries(msg=None):
+    if(msg is None):
+        msg = 'Review all entries to ensure correctness, then go to the next page.'
+
+    msg_split = msg.split('\n')
+    max_str = max(msg_split, key=len)
+    strLen = len(max_str)
+
+    print("\n" + colorama.Fore.GREEN
+      + "*"*strLen
+      + "\n"
+      + msg
+      + "\n"
+      + "*"*strLen
+      + colorama.Style.RESET_ALL + "\n")

@@ -107,13 +107,8 @@ def navigate(creds, jobData):
     # Work Search Summary
     #####################
 
-    print("\n" + colorama.Fore.GREEN
-      + "*"*89
-      + "\n"
-      + "Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart the program."
-      + "\n"
-      + "*"*89
-      + colorama.Style.RESET_ALL + "\n")
+    msg = 'Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart the program.'
+    m_driver.msg_user_verify_entries(msg)
 
     #############################################################
     # Weekly Certification and Work Search Record Acknowledgement
@@ -138,13 +133,7 @@ def navigate(creds, jobData):
   if(screenID != 'SUC-002'): # SUC-002 = No Weeks are pending for the entered SSN. (weekly cert entry not possible)
     entry_weeklyCertification.main(driver)
 
-    print("\n" + colorama.Fore.GREEN
-      + "*"*67
-      + "\n"
-      + "Review all entries to ensure correctness, then go to the next page."
-      + "\n"
-      + "*"*67
-      + colorama.Style.RESET_ALL + "\n")
+    m_driver.msg_user_verify_entries()
 
     # WC-301 will load if "Did you perform any work?" was set to "Yes"
     # WC-006 will load if it was set to "No"
