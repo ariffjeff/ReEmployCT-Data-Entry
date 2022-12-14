@@ -131,7 +131,7 @@ class ScrollPage:
     def BOTTOM(driver):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-def msg_user_verify_entries(msg=None):
+def msg_user_verify_entries(msg=None, color='green'):
     if(msg is None):
         msg = 'Review all entries to ensure correctness, then go to the next page.'
 
@@ -139,7 +139,15 @@ def msg_user_verify_entries(msg=None):
     max_str = max(msg_split, key=len)
     strLen = len(max_str)
 
-    print("\n" + colorama.Fore.GREEN
+    switch = {
+        'green': colorama.Fore.GREEN, # friendly message
+        'yellow': colorama.Fore.YELLOW, # warning
+        'red': colorama.Fore.RED, # error
+        'white': colorama.Fore.WHITE, # normal/debug
+        'magenta': colorama.Fore.MAGENTA # something special
+    }
+
+    print("\n" + switch[color]
       + "*"*strLen
       + "\n"
       + msg
