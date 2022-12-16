@@ -12,6 +12,7 @@ import wrangle_job_data as wrangle
 import modules_webdriver as m_driver
 
 def main():
+    colorama.init() # init colored text to work on Windows
     msg = '--- Automatic unemployment benefits data entry for the U.S. DOL ReEmploy CT for Firefox ---'
     m_driver.msg_user_verify_entries(msg)
 
