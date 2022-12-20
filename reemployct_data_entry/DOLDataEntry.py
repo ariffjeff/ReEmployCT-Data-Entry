@@ -29,7 +29,7 @@ def main():
     # validate job data filepath
     updateJobFilepath = False
     while(not m_fp.is_job_data_filepath_valid(json_jobDataFilepath['filepath_jobData'])):
-        json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.GREEN + "Enter the filepath (including file extension) to your job data excel file: " + colorama.Style.RESET_ALL)
+        json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.GREEN + "Enter the filepath (including file extension) of your job data excel file: " + colorama.Style.RESET_ALL)
         updateJobFilepath = True
 
     # set json job data filepath in jobDataLocation.json
