@@ -17,7 +17,7 @@ def main():
     m_driver.msg_user_verify_entries(msg)
 
     # create job data filepath json file if missing
-    JOB_FILEPATH_JSON = "jobDataLocation.json"
+    JOB_FILEPATH_JSON = "reemployct_data_entry/jobDataLocation.json"
     if(not m_fp.is_filepath_valid(JOB_FILEPATH_JSON)):
         with open(JOB_FILEPATH_JSON, 'w') as file:
             json.dump({'filepath_jobData': ''}, file)
@@ -43,17 +43,19 @@ def main():
     ###################################
 
     # if missing credential files, delete anything remaining, then recreate credentials
-    if(not os.path.exists('credFile.ini') or not os.path.exists('key.key')):
-        if(os.path.exists('credFile.ini')):
+    CRED_FILE = 'reemployct_data_entry/credFile.ini'
+    KEY_KEY = 'reemployct_data_entry/key.key'
+    if(not os.path.exists(CRED_FILE) or not os.path.exists(KEY_KEY)):
+        if(os.path.exists(CRED_FILE)):
             print("Missing credential's key file.\nDeleting credentials file to reset.")
-            os.remove('credFile.ini')
-        elif(os.path.exists('key.key')):
+            os.remove(CRED_FILE)
+        elif(os.path.exists(KEY_KEY)):
             print("Missing credentials file.\nDeleting credential's key file to reset.")
-            os.remove('key.key')
+            os.remove(KEY_KEY)
         credCon.create_user_credentials()
 
     creds = credCon.Credentials()
-    creds.rebuild_creds_from_file('credFile.ini')
+    creds.rebuild_creds_from_file(CRED_FILE)
     if(creds.are_creds_expired()):
         print("Your credentials expired on " + creds.expire_time()['formatted'])
         credCon.create_user_credentials()
