@@ -17,7 +17,7 @@ def main():
     m_driver.msg_user_verify_entries(msg)
 
     # create job data filepath json file if missing
-    JOB_FILEPATH_JSON = "reemployct_data_entry/jobDataLocation.json"
+    JOB_FILEPATH_JSON = m_fp.dynamic_full_path('jobDataLocation.json')
     if(not m_fp.is_filepath_valid(JOB_FILEPATH_JSON)):
         with open(JOB_FILEPATH_JSON, 'w') as file:
             json.dump({'filepath_jobData': ''}, file)
@@ -43,8 +43,8 @@ def main():
     ###################################
 
     # if missing credential files, delete anything remaining, then recreate credentials
-    CRED_FILE = 'reemployct_data_entry/credFile.ini'
-    KEY_KEY = 'reemployct_data_entry/key.key'
+    CRED_FILE = m_fp.dynamic_full_path('credFile.ini')
+    KEY_KEY = m_fp.dynamic_full_path('key.key')
     if(not os.path.exists(CRED_FILE) or not os.path.exists(KEY_KEY)):
         if(os.path.exists(CRED_FILE)):
             print("Missing credential's key file.\nDeleting credentials file to reset.")
