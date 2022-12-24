@@ -4,11 +4,9 @@ import ctypes
 import time
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 import colorama
 from getpass import getpass
-from selenium.webdriver.common.by import By
-import modules_webdriver as m_driver
 import modules_filepaths as m_fp
 
 class Encrypted_Property:

@@ -1,11 +1,9 @@
 import pandas as pd
 import json
-from cryptography.fernet import Fernet
 import os
 import datetime
 import navigate_ReEmployCT
 import colorama
-from selenium import webdriver
 import modules_filepaths as m_fp
 import controller_credentials as credCon
 import wrangle_job_data as wrangle
