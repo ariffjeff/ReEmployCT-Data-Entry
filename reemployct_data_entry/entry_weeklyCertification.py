@@ -1,6 +1,7 @@
-from selenium.webdriver.common.by import By
-import lib.webdriver as m_driver
 import colorama
+import lib.webdriver as m_driver
+from selenium.webdriver.common.by import By
+
 
 def main(driver):
   #######################################

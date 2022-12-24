@@ -1,10 +1,13 @@
-import pandas as pd
-import colorama
-from selenium.webdriver.common.by import By
-import lib.webdriver as m_driver
 from datetime import timedelta
+
+import colorama
+import pandas as pd
 import usaddress
+from selenium.webdriver.common.by import By
+
 import lib.stateDictionary as states
+import lib.webdriver as m_driver
+
 
 def sanitize(driver, jobData):
   '''

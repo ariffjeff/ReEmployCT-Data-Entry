@@ -1,13 +1,15 @@
-import pandas as pd
+import datetime
 import json
 import os
-import datetime
-import navigate_ReEmployCT
+
 import colorama
-import lib.filepaths as m_fp
 import controller_credentials as credCon
-import lib.wrangle_job_data as wrangle
+import lib.filepaths as m_fp
 import lib.webdriver as m_driver
+import lib.wrangle_job_data as wrangle
+import navigate_ReEmployCT
+import pandas as pd
+
 
 def main():
     colorama.init() # init colored text to work on Windows

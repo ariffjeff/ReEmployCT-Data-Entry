@@ -1,13 +1,15 @@
 # Creates a credential file.
-from cryptography.fernet import Fernet
 import ctypes
-import time
 import os
 import sys
+import time
 from datetime import datetime
-import colorama
 from getpass import getpass
+
+import colorama
 import lib.filepaths as m_fp
+from cryptography.fernet import Fernet
+
 
 class Encrypted_Property:
     ''' Creates user credential properties that are encrypted and handled via getter/setter functionality '''

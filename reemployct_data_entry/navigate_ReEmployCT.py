@@ -1,10 +1,12 @@
-from selenium.webdriver.common.by import By
+import time
+
 import colorama
-import entry_workSearch
 import entry_weeklyCertification
+import entry_workSearch
 import lib.webdriver as m_driver
 import lib.wrangle_job_data as wrangle
-import time
+from selenium.webdriver.common.by import By
+
 
 def navigate(creds, jobData):
   

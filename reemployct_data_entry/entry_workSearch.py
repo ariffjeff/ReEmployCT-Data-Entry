@@ -1,8 +1,9 @@
-from selenium.webdriver.common.by import By
-import lib.webdriver as m_driver
-import usaddress
-import lib.wrangle_job_data as wrangle
 import colorama
+import lib.webdriver as m_driver
+import lib.wrangle_job_data as wrangle
+import usaddress
+from selenium.webdriver.common.by import By
+
 
 def questionnaire(driver, timeout=0):
   ###########################
