@@ -7,7 +7,7 @@ import sys
 from datetime import datetime
 import colorama
 from getpass import getpass
-import modules_filepaths as m_fp
+import lib.filepaths as m_fp
 
 class Encrypted_Property:
     ''' Creates user credential properties that are encrypted and handled via getter/setter functionality '''

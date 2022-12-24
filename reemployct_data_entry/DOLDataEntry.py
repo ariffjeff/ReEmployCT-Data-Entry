@@ -4,10 +4,10 @@ import os
 import datetime
 import navigate_ReEmployCT
 import colorama
-import modules_filepaths as m_fp
+import lib.filepaths as m_fp
 import controller_credentials as credCon
-import wrangle_job_data as wrangle
-import modules_webdriver as m_driver
+import lib.wrangle_job_data as wrangle
+import lib.webdriver as m_driver
 
 def main():
     colorama.init() # init colored text to work on Windows

@@ -2,8 +2,8 @@ from selenium.webdriver.common.by import By
 import colorama
 import entry_workSearch
 import entry_weeklyCertification
-import modules_webdriver as m_driver
-import wrangle_job_data
+import lib.webdriver as m_driver
+import lib.wrangle_job_data as wrangle
 import time
 
 def navigate(creds, jobData):
@@ -63,15 +63,15 @@ def navigate(creds, jobData):
   if(screenID == 'WC-800'): # Work Search Questionnaire page
     entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
 
-    wrangle = wrangle_job_data.sanitize(driver, jobData)
-    jobData = wrangle['jobData']
+    job_data_wrangled = wrangle.sanitize(driver, jobData)
+    jobData = job_data_wrangled['jobData']
 
     # error if user doesn't have enough unique jobs to match minimum compliance 
-    if(len(jobData) < wrangle['entries_min'] - wrangle['entries_existing_n']):
+    if(len(jobData) < job_data_wrangled['entries_min'] - job_data_wrangled['entries_existing_n']):
       print(colorama.Fore.RED)
       print("Not enough jobs found in excel file to enter for target week!")
       print("{} jobs available to enter that aren't duplicates of any existing entries.".format(len(jobData)))
-      print("You must enter at least {} more jobs into the excel file for the target week.".format(wrangle['entries_min'] - wrangle['entries_existing_n']) + colorama.Style.RESET_ALL)
+      print("You must enter at least {} more jobs into the excel file for the target week.".format(job_data_wrangled['entries_min'] - job_data_wrangled['entries_existing_n']) + colorama.Style.RESET_ALL)
       print(colorama.Fore.GREEN + "If you do not need to look at the existing entries, quit the browser." + colorama.Style.RESET_ALL)
       # quit when user closes browser
       try:
@@ -82,16 +82,16 @@ def navigate(creds, jobData):
 
     # enter job data
     jobRow_i = 0
-    while(wrangle['entries_existing_n'] < wrangle['entries_min']):
+    while(job_data_wrangled['entries_existing_n'] < job_data_wrangled['entries_min']):
       jobRow = jobData.iloc[jobRow_i]
       print(colorama.Fore.GREEN +
-      "\n(Job: {}/{}) Entering data: {} - {}".format(wrangle['entries_existing_n'] + 1, wrangle['entries_min'], jobRow['Employer Name'], jobRow['Position Applied For'])
+      "\n(Job: {}/{}) Entering data: {} - {}".format(job_data_wrangled['entries_existing_n'] + 1, job_data_wrangled['entries_min'], jobRow['Employer Name'], jobRow['Position Applied For'])
       + colorama.Style.RESET_ALL)
-      if(wrangle['entries_existing_n'] > 0): # different page layout when existing entries are present
+      if(job_data_wrangled['entries_existing_n'] > 0): # different page layout when existing entries are present
         m_driver.ScrollPage.BOTTOM(driver) # scroll to bottom of page to reveal button since many entries will push button out of view
         m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
       entry_workSearch.enterWorkSearch(driver, jobRow)
-      wrangle['entries_existing_n'] += 1
+      job_data_wrangled['entries_existing_n'] += 1
       jobRow_i += 1
 
     #####################

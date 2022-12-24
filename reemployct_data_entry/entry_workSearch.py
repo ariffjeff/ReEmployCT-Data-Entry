@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
-import modules_webdriver as m_driver
+import lib.webdriver as m_driver
 import usaddress
-import wrangle_job_data as wrangle
+import lib.wrangle_job_data as wrangle
 import colorama
 
 def questionnaire(driver, timeout=0):
