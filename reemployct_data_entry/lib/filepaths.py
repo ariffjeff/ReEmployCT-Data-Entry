@@ -1,5 +1,5 @@
 import os
-import sys
+import inspect
 
 
 def is_job_data_filepath_valid(filepath):
@@ -31,10 +31,11 @@ def dynamic_full_path(filename) -> str:
 
     # get path of file that called this function
     # effectively the same as calling __file__ from the desired file
-    executing_file_path = os.path.realpath(sys.argv[0])
-    executing_file_path = os.path.dirname(executing_file_path)
+    frm = inspect.stack()[1]
+    mod = inspect.getmodule(frm[0])
+    path = os.path.dirname(mod.__file__)
     
-    full_path = os.path.join(executing_file_path, filename)
+    full_path = os.path.join(path, filename)
 
     if(not os.path.exists(full_path)):
         raise Exception('Filename path does not exist: ' + full_path)
