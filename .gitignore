@@ -3,6 +3,6 @@ __pycache__
 *.pyc
 geckodriver.log
 credFile.ini*
-key.key
-jobDataLocation.json
+key.key*
+jobDataLocation.json*
 .env
