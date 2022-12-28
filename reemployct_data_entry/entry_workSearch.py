@@ -1,8 +1,9 @@
 import colorama
-import lib.webdriver as m_driver
-import lib.wrangle_job_data as wrangle
 import usaddress
 from selenium.webdriver.common.by import By
+
+from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import wrangle_job_data as wrangle
 
 
 def questionnaire(driver, timeout=0):

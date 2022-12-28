@@ -1,11 +1,11 @@
 import time
 
 import colorama
-import entry_weeklyCertification
-import entry_workSearch
-import lib.webdriver as m_driver
-import lib.wrangle_job_data as wrangle
 from selenium.webdriver.common.by import By
+
+from reemployct_data_entry import entry_weeklyCertification, entry_workSearch
+from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import wrangle_job_data as wrangle
 
 
 def navigate(creds, jobData):

@@ -1,6 +1,9 @@
 import unittest
-import wrangle_job_data as wrangle
+
 import usaddress
+
+from reemployct_data_entry.lib import wrangle_job_data as wrangle
+
 
 class Test_Address_Parsing(unittest.TestCase):
 

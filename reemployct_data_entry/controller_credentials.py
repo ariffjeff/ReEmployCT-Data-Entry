@@ -7,8 +7,9 @@ from datetime import datetime
 from getpass import getpass
 
 import colorama
-import lib.filepaths as m_fp
 from cryptography.fernet import Fernet
+
+from reemployct_data_entry.lib import filepaths as m_fp
 
 
 class Encrypted_Property:

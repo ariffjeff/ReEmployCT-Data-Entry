@@ -5,8 +5,8 @@ import pandas as pd
 import usaddress
 from selenium.webdriver.common.by import By
 
-import lib.stateDictionary as states
-import lib.webdriver as m_driver
+from . import stateDictionary as states
+from . import webdriver as m_driver
 
 
 def sanitize(driver, jobData):

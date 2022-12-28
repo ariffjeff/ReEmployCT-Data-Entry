@@ -1,5 +1,7 @@
 import unittest
-from controller_credentials import Credentials as Creds
+
+from reemployct_data_entry import controller_credentials as cc
+
 
 class TestCredCon(unittest.TestCase):
 
@@ -10,7 +12,7 @@ class TestCredCon(unittest.TestCase):
     This is to force name parity between the desired credential key attribs in __init__ and the keys that actually output to the .ini file in order to reduce complexity
     For example, this unit test fails if the __init__ key name_first is written as first_name in userCreds.ini_file_keys()
     '''
-    userCreds = Creds()
+    userCreds = cc.Credentials()
     formatted_credential_string = userCreds.create_formatted_cred_output_string()
     KEYS = userCreds.ini_file_keys()
     self.assertEqual(formatted_credential_string.rstrip('\n').count('\n') + 1, len(KEYS))

@@ -3,12 +3,13 @@ import json
 import os
 
 import colorama
-import controller_credentials as credCon
-import lib.filepaths as m_fp
-import lib.webdriver as m_driver
-import lib.wrangle_job_data as wrangle
-import navigate_ReEmployCT
 import pandas as pd
+
+from reemployct_data_entry import controller_credentials as credCon
+from reemployct_data_entry import navigate_ReEmployCT
+from reemployct_data_entry.lib import filepaths as m_fp
+from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import wrangle_job_data as wrangle
 
 
 def main():
