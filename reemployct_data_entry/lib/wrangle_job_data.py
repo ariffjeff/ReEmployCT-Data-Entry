@@ -1,9 +1,15 @@
-import pandas as pd
-import colorama
-from selenium.webdriver.common.by import By
-import modules_webdriver as m_driver
+from datetime import timedelta
 
-def main(driver, jobData):
+import colorama
+import pandas as pd
+import usaddress
+from selenium.webdriver.common.by import By
+
+from . import stateDictionary as states
+from . import webdriver as m_driver
+
+
+def sanitize(driver, jobData):
   '''
   Sanitize and simplify user's excel job data.
   Only return job data that is required for satisfying ReEmployCT's work-search job entry requirements.
@@ -96,3 +102,97 @@ def main(driver, jobData):
     'entries_min': entries_min,
     'entries_existing_n': entries_existing_n,
   }
+
+def drop_bad_rows(df):
+  '''
+  Clean table - drop rows of bad types
+  ''' 
+  df['Date of Work Search'] = df['Date of Work Search'].apply(lambda x: pd.to_datetime(x, errors='coerce')) # sets bad values to None/NaN/NaT for easy parsing
+  index_NaT = df.loc[pd.isna(df["Date of Work Search"]), :].index # get array of indices of rows where data is of None/NaN/NaT
+  return df.drop(df.index[index_NaT]) # drop rows
+
+def isolate_week_from_day(df, day_of_target_week):
+  '''
+  Isolate the rows of a week of job data from a pandas data frame based on a chosen day of a week
+  Arguments:
+    df : DataFrame obj
+      A Pandas DataFrame that holds the job data
+    day_of_target_week : Date obj
+      A datetime date object that is set to any day of a desired week
+    Returns dict of isolated DataFrame, start day, and end day for the target week
+  '''
+  # convert given date into SAT (0) - SUN (7) index format
+  day_idx = (day_of_target_week.weekday() + 1) % 7 # get day's number: SUN = 0 ... SAT = 6
+  day_start = pd.Timestamp(day_of_target_week - timedelta(day_idx)) # sunday
+  day_end = pd.Timestamp(day_start + timedelta(6)) # saturday
+
+  # isolate week
+  target_days = df['Date of Work Search'].between(day_start, day_end) # marks target days as True
+  df = df.loc[target_days == True] # isolate target week rows
+  df.reset_index(inplace=True)
+  return {
+    'table_jobs': df,
+    'day_start': day_start,
+    'day_end': day_end
+  }
+
+def target_week_has_job_data(target_week):
+  '''
+  check if there is any job data for target week
+  '''
+  if(len(target_week['table_jobs']) == 0):
+      print(colorama.Fore.RED +
+      "\n*** You have no days of job data to enter for the target week! ({} - {}) ***\nQuitting script.".format(target_week['day_start.date()'], target_week['day_end.date()'])
+      + colorama.Style.RESET_ALL)
+      return False
+  return True
+
+
+### US ADDRESSES
+
+def clean_usaddress_parse(address_parsed) -> dict:
+  '''
+  Create a cleaned up dict of the parsed result of the usaddress package.
+
+  Arguments:
+    parse : usaddress obj
+      the result of usaddress.parse(some_address)
+  '''
+  address_dict = {}
+  # rebuild similar address components into same dict elements since usaddress breaks them up by char block
+  for div in range(0, len(address_parsed)):
+    key = address_parsed[div][1]
+    if(key not in address_dict):
+      address_dict[key] = address_parsed[div][0]
+    else:
+      address_dict[key] += ' ' + address_parsed[div][0]
+    if(address_dict[key][-1] == ','): # remove trailing commas
+      address_dict[key] = address_dict[key][:-1]
+  return address_dict
+
+def state_abbrev_to_full_name(state_name) -> str:
+  '''
+  Convert US state name abbreviation to full state name
+  '''
+  STATES_DICT = states.states()
+  if(len(state_name) == 2):
+    try:
+      return STATES_DICT[state_name]
+    except:
+      raise Exception("Full state name conversion of state abbreviation could not be found.")
+  return state_name
+
+def build_address_from_cleaned_address_dict(address_dict) -> str:
+  '''
+  Rebuild street address components of the cleaned address dict from a usaddress package parse into a single string
+  '''
+  SEPARATER_KEY = 'StreetNamePostDirectional'
+  address_line_1 = ''
+  # US address components are sorted by a US standard, so loop through them to determine which dict elements to combine
+  for key in usaddress.LABELS:
+    if key in address_dict:
+      address_line_1 += address_dict[key] + ' '
+    if(key == SEPARATER_KEY):
+      address_line_1 = address_line_1.rstrip()
+      break
+  return address_line_1

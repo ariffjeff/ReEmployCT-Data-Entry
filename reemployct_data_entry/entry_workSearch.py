@@ -1,15 +1,10 @@
-from selenium import webdriver
-# from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
-from selenium.webdriver import Keys, ActionChains
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-import modules_webdriver as m_driver
-import usaddress
-import stateDictionary as states
 import colorama
+import usaddress
+from selenium.webdriver.common.by import By
+
+from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import wrangle_job_data as wrangle
+
 
 def questionnaire(driver, timeout=0):
   ###########################
@@ -32,8 +27,8 @@ def questionnaire(driver, timeout=0):
   # screenID = m_driver.waitGetElement(driver, By.ID, 'templateDivScreenId', 240, forceDelay=.5).text # wait for specific page
 
   # force wait until on either work search page
-  # WC-802 = no previous work entries present, WC-806 = one or more previous work entries present
-  m_driver.wait_for_page(driver, ['WC-802', 'WC-806'])
+  # WC-802 = Work Search Record Details (the entry form) (auto loaded first if no previous work entries present), WC-806 = Work Search Summary (one or more previous work entries present)
+  m_driver.wait_for_any_page_by_screenID(driver, ['WC-802', 'WC-806'])
 
 
 def enterWorkSearch(driver, jobData_day):
@@ -62,38 +57,12 @@ def enterWorkSearch(driver, jobData_day):
 
   driver.find_element(by=By.ID, value='empName').send_keys(jobData_day['Employer Name']) # Employer Name
 
-  # Get state name or its abbreviation from jobData_day['Employer Address'] - MUST BE US ADDRESS
-  STATES_DICT = states.states()
-  # create address dictionary
+  # create dict of US address components
   address = jobData_day['Employer Address']
   address_parsed = usaddress.parse(address)
-  address_dict = {}
-  # rebuild similar address components into same dict elements since usaddress breaks them up by char block
-  for div in range(0, len(address_parsed)):
-    key = address_parsed[div][1]
-    if(key not in address_dict):
-      address_dict[key] = address_parsed[div][0]
-    else:
-      address_dict[key] += ' ' + address_parsed[div][0]
-    if(address_dict[key][-1] == ','): # remove trailing commas
-      address_dict[key] = address_dict[key][:-1]
-
-  # convert state abbreviation to full state name
-  state_name = address_dict['StateName']
-  if(len(state_name) == 2):
-    address_dict['StateName'] = STATES_DICT[state_name]
-
-  # rebuild street address components into single value
-  # US address components are sorted by standard, so loop through them to determine which dict elements to combine
-  separater_key = 'StreetNamePostDirectional'
-  address_line_1 = ''
-  for key in usaddress.LABELS:
-    if key in address_dict:
-      address_line_1 += address_dict[key] + ' '
-    if(key == separater_key):
-      address_line_1 = address_line_1.rstrip()
-      break
-
+  address_dict = wrangle.clean_usaddress_parse(address_parsed)
+  address_dict['StateName'] = wrangle.state_abbrev_to_full_name(address_dict['StateName']) # Get state name or its abbreviation - MUST BE US ADDRESS
+  address_line_1 = wrangle.build_address_from_cleaned_address_dict(address_dict)
 
   driver.find_element(by=By.ID, value='address_-address1').send_keys(address_line_1) # Address Line 1
   driver.find_element(by=By.ID, value='address_-city').send_keys(address_dict['PlaceName']) # City
@@ -118,10 +87,12 @@ def enterWorkSearch(driver, jobData_day):
   driver.find_element(by=By.ID, value='method__3').click() # Next
 
   # check if still on entry page (probably b/c data entry error) since clicking Next was denied by site
-  screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId').text
-  if(screenID == 'WC-802'):
+  print("Looking for screenID: WC-802")
+  screenID = m_driver.wait_find_element(driver, By.ID, 'templateDivScreenId', forceDelay=0.4).text
+  print("Found screenID: {}".format(screenID))
+  if(screenID == 'WC-802'): # WC-802 = Work Search Record Details
     print(colorama.Fore.RED + "\nFailed to create Work Search entry!\nFix any errors on the page (as well as in the excel job file), then click Next." + colorama.Style.RESET_ALL)
-    m_driver.wait_for_page(driver, ['WC-806']) # Wait for Work Search Summary page
+    m_driver.wait_for_page_by_screenID(driver, 'WC-806') # Wait for Work Search Summary page
 
 
 # if __name__ == "__main__":

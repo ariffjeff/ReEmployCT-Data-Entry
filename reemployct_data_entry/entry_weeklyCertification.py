@@ -1,12 +1,8 @@
-from selenium import webdriver
-# from selenium.webdriver.firefox.service import Service
+import colorama
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
-from selenium.webdriver import Keys, ActionChains
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-import modules_webdriver as m_driver
+
+from reemployct_data_entry.lib import webdriver as m_driver
+
 
 def main(driver):
   #######################################
@@ -22,7 +18,10 @@ def main(driver):
   # Did you work in any self-employment not previously reported to the Labor Department?
   driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[7]/td[5]/table/tbody/tr/td[2]/div/div[2]').click()
   # Did you perform any work?
-  driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[8]/td[5]/table/tbody/tr/td[2]/div/div[2]').click()
+  try:
+    driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[8]/td[5]/table/tbody/tr/td[2]/div/div[2]').click()
+  except:
+    print(colorama.Fore.YELLOW + "Skipping button since not able to click it. It might be disabled." + colorama.Style.RESET_ALL)
   # Do you have a definite date to return to full time employment?
   driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[10]/td[5]/table/tbody/tr/td[2]/div/div[2]').click()
   # Did you refuse any offer of work or rehire?
