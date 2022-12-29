@@ -240,7 +240,10 @@ class Credentials():
             'formatted': (datetime.fromtimestamp(float(self.credentials_expiration))).strftime('%Y-%m-%d %H:%M:%S')
         }
 
-    def get_encryption_key(self, key_file=m_fp.dynamic_full_path('key.key')):
+    def get_encryption_key(self, key_file=None):
+        if(key_file is None):
+            key_file = m_fp.dynamic_full_path('key.key')
+
         if(not os.path.exists(key_file)):
             return None
 
