@@ -19,7 +19,7 @@ def is_filepath_valid(filepath):
 def dynamic_full_path(filename) -> str:
     '''
     Returns the full absolute system filename path from a given relative filename path.
-    The given relative filename path must be valid.
+    The given relative filename path should be valid or valid in the future when the path is called upon (e.g. path to the key.key that hasn't been created yet).
     The returned filename path is constructed from the __file__ path of the file that called this function with the given filename path string appended.
         Arguments:
             filename : str obj
@@ -37,7 +37,8 @@ def dynamic_full_path(filename) -> str:
     
     full_path = os.path.join(path, filename)
 
-    if(not os.path.exists(full_path)):
-        raise Exception('Filename path does not exist: ' + full_path)
+    # no need to check path validity since some files that paths point to intenionally don't exist and are created in the future (such as cred file initialization)
+    # if(not os.path.exists(full_path)):
+        # raise Exception('Filename path does not exist: ' + full_path)
 
     return full_path
