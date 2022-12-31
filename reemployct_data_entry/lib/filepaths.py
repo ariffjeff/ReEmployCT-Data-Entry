@@ -39,6 +39,6 @@ def dynamic_full_path(filename, validate=False) -> str:
 
     # no need to check path validity in some cases since some files that paths point to intenionally don't exist and are created in the future (such as cred file initialization)
     if(validate and not os.path.exists(full_path)):
-        raise Exception('Filename path does not exist: ' + full_path)
+        raise Exception('Filepath does not exist: ' + full_path)
 
     return full_path
