@@ -15,8 +15,7 @@ cryptography = "*"
 openpyxl = "*"
 usaddress = "*"
 
-
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 autopep8 = "*"
 [build-system]
 requires = ["poetry-core"]
