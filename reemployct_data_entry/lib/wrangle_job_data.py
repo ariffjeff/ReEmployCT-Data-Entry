@@ -142,7 +142,7 @@ def target_week_has_job_data(target_week):
   '''
   if(len(target_week['table_jobs']) == 0):
       print(colorama.Fore.RED +
-      "\n*** You have no days of job data to enter for the target week! ({} - {}) ***\nQuitting script.".format(target_week['day_start.date()'], target_week['day_end.date()'])
+      "\n*** You have no days of job data to enter for the target week! ({} - {}) ***\nQuitting script.".format(target_week['day_start'].date(), target_week['day_end'].date())
       + colorama.Style.RESET_ALL)
       return False
   return True

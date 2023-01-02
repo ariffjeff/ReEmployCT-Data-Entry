@@ -4,7 +4,7 @@ import inspect
 
 def is_job_data_filepath_valid(filepath):
     if(not os.path.isfile(filepath) or os.path.splitext(filepath)[-1] != ".xlsx"):
-        print("No user job data excel file found.")
+        print("No excel file found at: {}".format(filepath))
         return False
     print("Job data excel found at: \"" + filepath + "\"")
     return True

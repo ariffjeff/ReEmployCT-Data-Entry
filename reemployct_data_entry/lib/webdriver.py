@@ -130,7 +130,15 @@ class ScrollPage:
     def BOTTOM(driver):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-def msg_user_verify_entries(msg=None, color='green'):
+def msg_user_verify_entries(msg=None, color='green') -> None:
+    '''
+    Prints a standard looking message to the user in a desired color.
+    Arguments:
+        msg: str obj
+            The message to print.
+        color: str obj
+            The color of the message.
+    '''
     if(msg is None):
         msg = 'Review all entries to ensure correctness, then go to the next page.'
 
