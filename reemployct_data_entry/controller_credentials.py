@@ -10,6 +10,7 @@ import colorama
 from cryptography.fernet import Fernet
 
 from reemployct_data_entry.lib import filepaths as m_fp
+from reemployct_data_entry.lib import webdriver as m_driver
 
 
 class Encrypted_Property:
@@ -297,9 +298,7 @@ def create_user_credentials():
     creds.credentials_expiration = timestamp
     
     creds.create_credentials_file()
-    print("**"*20)
-    print("Cred file created successfully at {}".format(time.ctime()))
-    print("**"*20)
+    m_driver.msg_user_verify_entries("Cred file created successfully at {}".format(time.ctime()), "green")
 
 def create_correction_user_credentials():
     '''
