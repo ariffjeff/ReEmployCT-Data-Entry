@@ -1,5 +1,5 @@
 # Connecticut Dep. of Labor ReEmployCT Automated Data Entry
-[![Python application](https://github.com/ariffjeff/ReEmployCT-Data-Entry/actions/workflows/python-app.yml/badge.svg?branch=main)](https://github.com/ariffjeff/ReEmployCT-Data-Entry/actions/workflows/python-app.yml)
+[![Python application](https://github.com/ariffjeff/ReEmployCT-Data-Entry/actions/workflows/python-app.yml/badge.svg)](https://github.com/ariffjeff/ReEmployCT-Data-Entry/actions/workflows/python-app.yml)
 [![Upload Python Package](https://github.com/ariffjeff/ReEmployCT-Data-Entry/actions/workflows/python-publish.yml/badge.svg?branch=main)](https://github.com/ariffjeff/ReEmployCT-Data-Entry/actions/workflows/python-publish.yml)
 
 A Python CLI that automates entry of unemployment benefits data (weekly work search and certification) into Connecticut's DOL [ReEmployCT portal](https://reemployct.dol.ct.gov). ([More information on ReEmployCT](https://portal.ct.gov/dol/Unemployment-Benefits))
