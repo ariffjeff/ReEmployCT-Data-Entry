@@ -6,3 +6,4 @@ credFile.ini*
 key.key*
 jobDataLocation.json*
 .env
+dist
