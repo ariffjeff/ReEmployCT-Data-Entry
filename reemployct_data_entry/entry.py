@@ -22,6 +22,7 @@ def main():
     if(not m_fp.is_filepath_valid(JOB_FILEPATH_JSON)):
         with open(JOB_FILEPATH_JSON, 'w') as file:
             json.dump({'filepath_jobData': ''}, file)
+        print("Created: {}".format(JOB_FILEPATH_JSON))
 
     # get job data filepath from json
     with open(JOB_FILEPATH_JSON, 'r') as file:
@@ -30,7 +31,7 @@ def main():
     # validate job data filepath
     updateJobFilepath = False
     while(not m_fp.is_job_data_filepath_valid(json_jobDataFilepath['filepath_jobData'])):
-        json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.GREEN + "Enter the filepath (including file extension) of your job data excel file: " + colorama.Style.RESET_ALL)
+        json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.GREEN + "Enter the full filepath (including file extension) of your job data excel file: " + colorama.Style.RESET_ALL)
         updateJobFilepath = True
 
     # set json job data filepath in jobDataLocation.json
