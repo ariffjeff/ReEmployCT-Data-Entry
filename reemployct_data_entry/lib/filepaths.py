@@ -4,16 +4,19 @@ import inspect
 
 def is_job_data_filepath_valid(filepath):
     if(not os.path.isfile(filepath) or os.path.splitext(filepath)[-1] != ".xlsx"):
-        print("No excel file found at: {}".format(filepath))
+        if(len(filepath) == 0): # mainly for when initial package gets installed and there is no path set
+            print("No user job data excel file found.")
+            return False
+        print("No user job data excel file found: {}".format(filepath))
         return False
-    print("Job data excel found at: \"" + filepath + "\"")
+    print("User job data excel file found: {}".format(filepath))
     return True
 
 def is_filepath_valid(filepath):
     if(not os.path.isfile(filepath)):
-        print("No user job data file found.")
+        print("No user job data .json config found: {}".format(filepath))
         return False
-    print("Job data found at: " + filepath)
+    print("User job data config found: {}".format(filepath))
     return True
 
 def dynamic_full_path(filename, validate=False) -> str:
