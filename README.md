@@ -14,6 +14,9 @@ Weekly job application data from an Excel file that the user actively maintains 
 - Currently only job applications are supported by this program as data entries into ReEmployCT from the Excel file. (Job applications are defined as "employer contacts" by CT DOL). In other words, a valid work search such as a job fair attendance can not be entered by this program and instead would need to be entered into ReEmployCT manually.
 
 ## How to use
+### Video Tutorial
+[Automated Connecticut Weekly Unemployment Benefits](https://www.youtube.com/watch?v=Ff6FEwIE0Bw)
+
 ### Install ([PyPI](https://pypi.org/project/reemployct-data-entry/))
 `pip install reemployct-data-entry`
 
