@@ -427,6 +427,17 @@ files = [
 ]
 
 [[package]]
+name = "pwinput"
+version = "1.0.2"
+description = "A cross-platform Python module that displays **** for password input. Works on Windows, unlike getpass. Formerly called stdiomask."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pwinput-1.0.2.tar.gz", hash = "sha256:03614712c487c54267ba02c8dde1405c15bbfb6e230fe6f1f366e2e94e344e25"},
+]
+
+[[package]]
 name = "pycodestyle"
 version = "2.10.0"
 description = "Python style guide checker"
@@ -722,4 +733,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "844b73a25cc208b184beb006c350fe52d2e7423035eb3d6e0870548de3a78d34"
+content-hash = "0ca9b58838bca49b10048412ff9923f76f156a364cd9bc342a70a33eb0263324"

@@ -17,6 +17,7 @@ selenium = "*"
 cryptography = "*"
 openpyxl = "*"
 usaddress = "*"
+pwinput = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "*"

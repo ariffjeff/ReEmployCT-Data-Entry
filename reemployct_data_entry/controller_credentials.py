@@ -4,10 +4,10 @@ import os
 import sys
 import time
 from datetime import datetime
-from getpass import getpass
 
 import colorama
 from cryptography.fernet import Fernet
+from pwinput import pwinput
 
 from reemployct_data_entry.lib import filepaths as m_fp
 from reemployct_data_entry.lib import webdriver as m_driver
@@ -103,7 +103,7 @@ class Credentials():
 
         ssn = ssn_format(ssn)
         while(len(ssn) != 9 or not ssn.isdigit()):
-            ssn = ssn_format(getpass("Invalid input.\nEnter social security number:"))
+            ssn = ssn_format(pwinput("Invalid input.\nEnter social security number:"))
         f = self.gen_key()
         self.__ssn = self.encrypt_value(ssn, f)
         del f, ssn
@@ -284,8 +284,8 @@ def create_user_credentials():
 
     # accepting credentials
     creds.username = input("Username:")
-    creds.password = getpass("Password:")
-    creds.ssn = getpass("Social Security Number:")
+    creds.password = pwinput("Password:")
+    creds.ssn = pwinput("Social Security Number:")
     print("Enter the expiry time for key file in minutes, [default:Will never expire]")
     
     # unix timestamp
@@ -315,7 +315,7 @@ def create_correction_user_credentials():
     creds.phone_number = input('Phone Number:')
     creds.email = input('Email:')
     if(creds.ssn == ''):
-        creds.ssn = getpass('Social Security Number:')
+        creds.ssn = pwinput('Social Security Number:')
     creds.name_mothers_maiden = input('Mother\'s Maiden Name:')
     creds.date_of_birth = input('Date of Birth (MM/DD/YYYY):')
     creds.drivers_license_state_ID_number = input('Driver\'s License/State ID Number:')
