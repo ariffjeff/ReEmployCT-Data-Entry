@@ -24,8 +24,7 @@ class Test_Address_Parsing(unittest.TestCase):
     }
 
     # create dict of US address components
-    address_parsed = usaddress.parse(ADDRESS_INPUT)
-    address_dict = wrangle.clean_usaddress_parse(address_parsed)
+    address_dict = wrangle.parse_us_address(ADDRESS_INPUT)
     address_dict['StateName'] = wrangle.state_abbrev_to_full_name(address_dict['StateName']) # Get state name or its abbreviation - MUST BE US ADDRESS
     address_line_1 = wrangle.build_address_from_cleaned_address_dict(address_dict)
 

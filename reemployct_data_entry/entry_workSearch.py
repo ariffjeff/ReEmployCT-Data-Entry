@@ -1,5 +1,4 @@
 import colorama
-import usaddress
 from selenium.webdriver.common.by import By
 
 from reemployct_data_entry.lib import webdriver as m_driver
@@ -59,8 +58,7 @@ def enterWorkSearch(driver, jobData_day):
 
   # create dict of US address components
   address = jobData_day['Employer Address']
-  address_parsed = usaddress.parse(address)
-  address_dict = wrangle.clean_usaddress_parse(address_parsed)
+  address_dict = wrangle.parse_us_address(address)
   address_dict['StateName'] = wrangle.state_abbrev_to_full_name(address_dict['StateName']) # Get state name or its abbreviation - MUST BE US ADDRESS
   address_line_1 = wrangle.build_address_from_cleaned_address_dict(address_dict)
 

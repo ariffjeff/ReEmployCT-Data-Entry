@@ -9,10 +9,48 @@ from . import stateDictionary as states
 from . import webdriver as m_driver
 
 
-def sanitize(driver, jobData):
+def sanitize_dataframe(df: pd.DataFrame, isolate_columns=[]) -> pd.DataFrame:
   '''
-  Sanitize and simplify user's excel job data.
-  Only return job data that is required for satisfying ReEmployCT's work-search job entry requirements.
+  Drop rows from pandas dataframe of bad data such as NaNs (includes empty data).
+  If columns names are included, drop all other columns except those specified. Strings must match names of columns.
+
+  Arguments:
+    df : 
+      Pandas dataframe
+    isolate_columns : str or [str]
+      Columns to isolate if specified.
+  '''
+
+  if(type(isolate_columns) == str):
+    isolate_columns = [isolate_columns]
+
+  # clean excel jobs rows and convert them to dicts
+  jobData_toCompare = []
+  for jobRow in range(len(df)):
+    jobRow = df.iloc[jobRow]
+    jobRow = jobRow.dropna()
+    date_timestamp_col = jobRow['Date of Work Search'] # save timestamp dtype because .strip() destroys it
+    jobRow = jobRow.str.strip() # strip leading and trailing whitespaces
+    jobRow['Date of Work Search'] = date_timestamp_col
+    jobRow = jobRow.drop('index')
+    jobRow = jobRow.to_dict()
+    jobData_toCompare.append(jobRow)
+
+  # isolate dict key values to only the most simple unqiue identifying info that needs to be compared
+  if(len(isolate_columns) > 0):
+    for jobRow in jobData_toCompare:
+      delete_dict_keys(jobRow, isolate_columns)
+
+  df = pd.DataFrame(jobData_toCompare)
+  df.dropna(inplace=True)
+  df.reset_index(drop=True, inplace=True)
+
+  return df
+
+
+def exclude_existing_entries(driver, jobData):
+  '''
+  Remove rows of job data that already exist as entries in ReEmployCT
   Should be executed on the work search page (where job data is entered) where there may be previous job entries present so they can be read.
   '''
 
@@ -60,32 +98,17 @@ def sanitize(driver, jobData):
   jobData_toCompare = []
   for jobRow in range(len(jobData)):
     jobRow = jobData.iloc[jobRow]
-    jobRow = jobRow.dropna()
-    date_timestamp_col = jobRow['Date of Work Search'] # save timestamp dtype because .strip() destroys it
-    jobRow = jobRow.str.strip() # strip leading and trailing whitespaces
-    jobRow['Date of Work Search'] = date_timestamp_col
-    jobRow = jobRow.drop('index')
     jobRow = jobRow.to_dict()
     jobData_toCompare.append(jobRow)
 
-  def deleteDictKeys(dictionary, keys):
-    dict_copy = dict(dictionary) # non reference copy
-    for key in dict_copy:
-      if(key not in keys):
-        del dictionary[key]
-    return dictionary
+  # get column names of jobData to isolate from entries_existing
+  JOB_DATA_TO_MATCH = []
+  for col in jobData.columns:
+    JOB_DATA_TO_MATCH.append(col)
 
-  # most simple unique indentifying info of a job application
-  JOB_DATA_TO_MATCH = [
-    'Date of Work Search',
-    'Employer Name',
-    'Position Applied For'
-  ]
   # isolate dict key values to only the most simple unqiue identifying info that needs to be compared
-  for jobRow in jobData_toCompare:
-    jobRow = deleteDictKeys(jobRow, JOB_DATA_TO_MATCH)
   for entry in entries_existing:
-    entry = deleteDictKeys(entry, JOB_DATA_TO_MATCH)
+    delete_dict_keys(entry, JOB_DATA_TO_MATCH)
 
   # filter out existing excel job data rows
   jobData_existing_indices = []
@@ -102,6 +125,61 @@ def sanitize(driver, jobData):
     'entries_min': entries_min,
     'entries_existing_n': entries_existing_n,
   }
+
+
+def delete_dict_keys(d, keys):
+  dict_copy = dict(d) # non reference copy
+  for key in dict_copy:
+    if(key not in keys):
+      del d[key]
+  return d
+
+
+def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
+  '''
+  Remove rows that contain non US addresses
+  Returns DataFrame
+  '''
+
+  states_dict = states.states()
+  states_full_list = states.states_full_name_list()
+  
+  initial_n = len(df)
+  removed = 0
+  indexes_to_drop = []
+  for row in range(len(df)):
+    address = parse_us_address(df.iloc[row]['Employer Address'])
+    try:
+      if(not(address['StateName'] in states_dict or address['StateName'] in states_full_list)):
+        indexes_to_drop.append(row)
+        removed += 1
+    except:
+      # exception usually occurs when state name was never entered correctly/at all by user even if it was a US address
+      # e.g. user enters US address like "1 W 1st St, New York, 10001, US" which is invalid because "New York" is only parsed as PlaceName here
+      # it should instead be "1 W 1st St, New York, New York 10001, US"
+      indexes_to_drop.append(row)
+      removed += 1
+
+  addresses_to_drop = []
+  for i in indexes_to_drop:
+    addresses_to_drop.append(df.iloc[i]['Employer Address'])
+  
+
+  if(removed > 0):
+    m_driver.msg_user_verify_entries("{} of {} job rows will be automatically excluded for the target week because they \
+contain invalid addresses and/or are non-U.S. addresses.\
+    \nIf they are supposed to be U.S. addresses, please check they are entered correctly in your Excel data.\
+    \nIf they are non-U.S. addresses, ReEmployCT won't accept them.".format(removed, initial_n), color="yellow")
+
+    print(colorama.Fore.YELLOW, "Excluding jobs with these addresses...")
+    for i in range(len(addresses_to_drop)):
+      print(colorama.Fore.YELLOW, i + 1, ":", addresses_to_drop[i])
+    print(colorama.Style.RESET_ALL)
+
+  df.drop(indexes_to_drop, inplace=True)
+
+  return df
+
 
 def drop_bad_rows(df):
   '''
@@ -148,6 +226,18 @@ def target_week_has_job_data(target_week):
       + colorama.Style.RESET_ALL)
       return False
   return True
+
+
+def parse_us_address(address: str) -> dict:
+  '''
+  Parse address elements from string into dict
+  Only works correctly for U.S. addresses
+  Can be used on any address and examined to see if it's a valid U.S. address (i.e. check if interpretation of U.S. state is valid)
+  This is a wrapper around usaddress.parse() to fix its bad output
+  '''
+  address = usaddress.parse(address)
+  address = clean_usaddress_parse(address)
+  return address
 
 
 ### US ADDRESSES
