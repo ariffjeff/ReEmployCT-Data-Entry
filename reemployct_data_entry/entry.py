@@ -67,18 +67,31 @@ def main():
     ##########
 
     table_jobs = pd.read_excel(json_jobDataFilepath['filepath_jobData'])
-    table_jobs = wrangle.drop_bad_rows(table_jobs)
+    table_jobs = wrangle.drop_bad_rows(table_jobs) # only for removing completed different rows that break dataframe consistency
     target_week = wrangle.isolate_week_from_day(table_jobs,  datetime.date.today() - datetime.timedelta(7)) # last week
-
-    ############
-    # Data Entry
-    ############
 
     if not wrangle.target_week_has_job_data(target_week):
         return
     
+    # isolate only job data that is required for satisfying ReEmployCT's work-search job entry requirements.
+    JOB_DATA_TO_MATCH = [
+        'Date of Work Search',
+        'Employer Name',
+        'Position Applied For',
+        'Employer Address',
+        'Website Address'
+    ]
+    target_week['table_jobs'] = wrangle.sanitize_dataframe(target_week['table_jobs'], JOB_DATA_TO_MATCH)
+
+    target_week['table_jobs'] = wrangle.us_only_addresses(target_week['table_jobs'])
+
+    ############
+    # Data Entry
+    ############
+    
     driver = navigate_ReEmployCT.navigate(creds, target_week['table_jobs'])
-    print(colorama.Fore.GREEN + "\nData entry finished. Quitting.\n" + colorama.Style.RESET_ALL)
+    print(colorama.Fore.GREEN + "\nData entry finished. Quitting.\n")
+    input("Press Enter to quit..." + colorama.Style.RESET_ALL)
     driver.quit()
 
 if(__name__ == "__main__"):
