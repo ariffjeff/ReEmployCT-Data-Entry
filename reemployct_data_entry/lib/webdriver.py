@@ -143,6 +143,7 @@ def msg_user_verify_entries(msg=None, color='green') -> None:
         msg = 'Review all entries to ensure correctness, then go to the next page.'
 
     msg_split = msg.split('\n')
+    msg_split = list(map(str.strip, msg_split)) # strip trailing whitespace
     max_str = max(msg_split, key=len)
     strLen = len(max_str)
 
