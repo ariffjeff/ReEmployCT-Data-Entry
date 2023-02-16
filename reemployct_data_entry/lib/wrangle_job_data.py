@@ -182,6 +182,18 @@ def target_week_has_job_data(target_week):
   return True
 
 
+def parse_us_address(address: str) -> dict:
+  '''
+  Parse address elements from string into dict
+  Only works correctly for U.S. addresses
+  Can be used on any address and examined to see if it's a valid U.S. address (i.e. check if interpretation of U.S. state is valid)
+  This is a wrapper around usaddress.parse() to fix its bad output
+  '''
+  address = usaddress.parse(address)
+  address = clean_usaddress_parse(address)
+  return address
+
+
 ### US ADDRESSES
 
 def clean_usaddress_parse(address_parsed) -> dict:
