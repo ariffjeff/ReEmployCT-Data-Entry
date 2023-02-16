@@ -105,7 +105,9 @@ def sanitize(driver, jobData):
 
 def drop_bad_rows(df):
   '''
-  Clean table - drop rows of bad types
+  Clean table - drop rows of bad data
+  This is mainly to get rid of rows that are completely different from all the others/that break dataframe consistency (e.g. a row with only a single populated cell of comment text).
+  This is not meant to remove rows that contain NaNs
   ''' 
   df['Date of Work Search'] = df['Date of Work Search'].apply(lambda x: pd.to_datetime(x, errors='coerce')) # sets bad values to None/NaN/NaT for easy parsing
   index_NaT = df.loc[pd.isna(df["Date of Work Search"]), :].index # get array of indices of rows where data is of None/NaN/NaT
