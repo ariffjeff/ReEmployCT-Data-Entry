@@ -83,6 +83,8 @@ def main():
     ]
     target_week['table_jobs'] = wrangle.sanitize_dataframe(target_week['table_jobs'], JOB_DATA_TO_MATCH)
 
+    target_week['table_jobs'] = wrangle.us_only_addresses(target_week['table_jobs'])
+
     ############
     # Data Entry
     ############

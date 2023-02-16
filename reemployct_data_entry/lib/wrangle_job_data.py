@@ -135,6 +135,52 @@ def delete_dict_keys(d, keys):
   return d
 
 
+def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
+  '''
+  Remove rows that contain non US addresses
+  Returns DataFrame
+  '''
+
+  states_dict = states.states()
+  states_full_list = states.states_full_name_list()
+  
+  initial_n = len(df)
+  removed = 0
+  indexes_to_drop = []
+  for row in range(len(df)):
+    address = parse_us_address(df.iloc[row]['Employer Address'])
+    try:
+      if(not(address['StateName'] in states_dict or address['StateName'] in states_full_list)):
+        indexes_to_drop.append(row)
+        removed += 1
+    except:
+      # exception usually occurs when state name was never entered correctly/at all by user even if it was a US address
+      # e.g. user enters US address like "1 W 1st St, New York, 10001, US" which is invalid because "New York" is only parsed as PlaceName here
+      # it should instead be "1 W 1st St, New York, New York 10001, US"
+      indexes_to_drop.append(row)
+      removed += 1
+
+  addresses_to_drop = []
+  for i in indexes_to_drop:
+    addresses_to_drop.append(df.iloc[i]['Employer Address'])
+  
+
+  if(removed > 0):
+    m_driver.msg_user_verify_entries("{} of {} job rows will be automatically excluded for the target week because they \
+contain invalid addresses and/or are non-U.S. addresses.\
+    \nIf they are supposed to be U.S. addresses, please check they are entered correctly in your Excel data.\
+    \nIf they are non-U.S. addresses, ReEmployCT won't accept them.".format(removed, initial_n), color="yellow")
+
+    print(colorama.Fore.YELLOW, "Excluding jobs with these addresses...")
+    for i in range(len(addresses_to_drop)):
+      print(colorama.Fore.YELLOW, i + 1, ":", addresses_to_drop[i])
+    print(colorama.Style.RESET_ALL)
+
+  df.drop(indexes_to_drop, inplace=True)
+
+  return df
+
+
 def drop_bad_rows(df):
   '''
   Clean table - drop rows of bad data
