@@ -85,6 +85,9 @@ def main():
 
     target_week['table_jobs'] = wrangle.us_only_addresses(target_week['table_jobs'])
 
+    if(not wrangle.target_week_has_job_data(target_week)):
+        return
+
     ############
     # Data Entry
     ############
