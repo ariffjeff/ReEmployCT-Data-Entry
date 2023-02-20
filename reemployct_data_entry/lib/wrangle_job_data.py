@@ -198,7 +198,7 @@ contain invalid addresses and/or are non-U.S. addresses.\
   df.drop(indexes_to_drop, inplace=True)
 
   remaining = initial_n - removed
-  if(remaining >= 1 and remaining < 3):
+  if(remaining >= 1 and remaining < 3): # 0 remaining is dealt with later
     print("\nWith only {} valid job applications left for the target week, you might not have enough to meet the minimum of 3 requirement.".format(remaining))
 
   print(colorama.Style.RESET_ALL)
