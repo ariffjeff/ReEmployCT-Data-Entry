@@ -93,7 +93,7 @@ def main():
     ############
     
     driver = navigate_ReEmployCT.navigate(creds, target_week['table_jobs'])
-    print(colorama.Fore.GREEN + "\nData entry finished. Quitting.\n")
+    print(colorama.Fore.GREEN + "\nData entry finished.\n")
     input("Press Enter to quit..." + colorama.Style.RESET_ALL)
     driver.quit()
 
