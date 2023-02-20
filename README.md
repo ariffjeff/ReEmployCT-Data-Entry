@@ -18,7 +18,9 @@ Weekly job application data from an Excel file that the user actively maintains 
 [Automated Connecticut Weekly Unemployment Benefits](https://www.youtube.com/watch?v=Ff6FEwIE0Bw)
 
 ### Install ([PyPI](https://pypi.org/project/reemployct-data-entry/))
-`pip install reemployct-data-entry`
+```
+pip install reemployct-data-entry
+```
 
 
 
