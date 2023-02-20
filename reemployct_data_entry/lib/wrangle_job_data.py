@@ -141,6 +141,14 @@ def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
   Returns DataFrame
   '''
 
+  # required address components for entries in ReEmployCT (usaddress format)
+  ADDRESS_COMPONENTS = [
+    "AddressLine1", # assembled from build_address_from_cleaned_address_dict()
+    "PlaceName", # City
+    "StateName",
+    "ZipCode"
+  ]
+
   states_dict = states.states()
   states_full_list = states.states_full_name_list()
   
@@ -148,11 +156,23 @@ def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
   removed = 0
   indexes_to_drop = []
   for row in range(len(df)):
+
     address = parse_us_address(df.iloc[row]['Employer Address'])
+    address['AddressLine1'] = build_address_from_cleaned_address_dict(address)
+
     try:
+      # check for US state
       if(not(address['StateName'] in states_dict or address['StateName'] in states_full_list)):
         indexes_to_drop.append(row)
         removed += 1
+      else:
+        # check all address components exist
+        for comp in ADDRESS_COMPONENTS:
+          if(len(address[comp]) == 0):
+            indexes_to_drop.append(row)
+            removed += 1
+            break
+
     except:
       # exception usually occurs when state name was never entered correctly/at all by user even if it was a US address
       # e.g. user enters US address like "1 W 1st St, New York, 10001, US" which is invalid because "New York" is only parsed as PlaceName here
@@ -163,7 +183,6 @@ def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
   addresses_to_drop = []
   for i in indexes_to_drop:
     addresses_to_drop.append(df.iloc[i]['Employer Address'])
-  
 
   if(removed > 0):
     m_driver.msg_user_verify_entries("{} of {} job rows will be automatically excluded for the target week because they \
@@ -174,9 +193,14 @@ contain invalid addresses and/or are non-U.S. addresses.\
     print(colorama.Fore.YELLOW, "Excluding jobs with these addresses...")
     for i in range(len(addresses_to_drop)):
       print(colorama.Fore.YELLOW, i + 1, ":", addresses_to_drop[i])
-    print(colorama.Style.RESET_ALL)
 
   df.drop(indexes_to_drop, inplace=True)
+
+  remaining = initial_n - removed
+  if(remaining >= 1 and remaining < 3): # 0 remaining is dealt with later
+    print("\nWith only {} valid job applications left for the target week, you might not have enough to meet the minimum of 3 requirement.".format(remaining))
+
+  print(colorama.Style.RESET_ALL)
 
   return df
 
