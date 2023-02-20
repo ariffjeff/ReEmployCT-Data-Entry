@@ -183,7 +183,6 @@ def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
   addresses_to_drop = []
   for i in indexes_to_drop:
     addresses_to_drop.append(df.iloc[i]['Employer Address'])
-  
 
   if(removed > 0):
     m_driver.msg_user_verify_entries("{} of {} job rows will be automatically excluded for the target week because they \
