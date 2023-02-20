@@ -194,9 +194,14 @@ contain invalid addresses and/or are non-U.S. addresses.\
     print(colorama.Fore.YELLOW, "Excluding jobs with these addresses...")
     for i in range(len(addresses_to_drop)):
       print(colorama.Fore.YELLOW, i + 1, ":", addresses_to_drop[i])
-    print(colorama.Style.RESET_ALL)
 
   df.drop(indexes_to_drop, inplace=True)
+
+  remaining = initial_n - removed
+  if(remaining >= 1 and remaining < 3):
+    print("\nWith only {} valid job applications left for the target week, you might not have enough to meet the minimum of 3 requirement.".format(remaining))
+
+  print(colorama.Style.RESET_ALL)
 
   return df
 
