@@ -18,6 +18,8 @@ cryptography = "*"
 openpyxl = "*"
 usaddress = "*"
 pwinput = "^1.0.2"
+requests = "^2.28.2"
+packaging = "^23.0"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "*"

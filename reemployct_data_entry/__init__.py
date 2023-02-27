@@ -1,5 +1,11 @@
+import importlib.metadata
+
+PACKAGE_NAME = 'reemployct_data_entry'
+
+__version__ = importlib.metadata.version(PACKAGE_NAME)
+
 # on `import reemployct_data_entry`, print the excel job data template file path for user convenience
-if __name__ == 'reemployct_data_entry':
+if __name__ == PACKAGE_NAME:
   from reemployct_data_entry.lib import filepaths
 
   EXCEL_FILENAME = 'workSearch_template.xlsx'
