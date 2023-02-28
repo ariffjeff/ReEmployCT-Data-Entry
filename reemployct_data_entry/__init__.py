@@ -1,9 +1,6 @@
-import subprocess
-
 PACKAGE_NAME = 'reemployct_data_entry'
 
 # can't use stdlib importlib.metadata here because remote tests will fail due to needing the package build
-__version__ = subprocess.run(['poetry', 'version', '-s'], capture_output=True, text=True).stdout.rstrip()
 
 # on `import reemployct_data_entry`, print the excel job data template file path for user convenience
 if __name__ == PACKAGE_NAME:
