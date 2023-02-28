@@ -1,9 +1,9 @@
-from importlib import metadata
+from pkg_resources import get_distribution
 
 PACKAGE_NAME = 'reemployct_data_entry'
 
 # can't use stdlib importlib.metadata here because remote tests will fail due to needing the package build
-__version__ = metadata.version(PACKAGE_NAME)
+__version__ = get_distribution(PACKAGE_NAME).version
 
 # on `import reemployct_data_entry`, print the excel job data template file path for user convenience
 if __name__ == PACKAGE_NAME:
