@@ -48,7 +48,7 @@ def sanitize_dataframe(df: pd.DataFrame, isolate_columns=[]) -> pd.DataFrame:
   return df
 
 
-def exclude_existing_entries(driver, jobData):
+def exclude_existing_entries(driver, jobData: pd.DataFrame) -> dict:
   '''
   Remove rows of job data that already exist as entries in ReEmployCT
   Should be executed on the work search page (where job data is entered) where there may be previous job entries present so they can be read.
@@ -127,7 +127,7 @@ def exclude_existing_entries(driver, jobData):
   }
 
 
-def delete_dict_keys(d, keys):
+def delete_dict_keys(d: dict, keys: list[str]) -> dict:
   dict_copy = dict(d) # non reference copy
   for key in dict_copy:
     if(key not in keys):
