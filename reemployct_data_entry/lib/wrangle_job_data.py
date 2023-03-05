@@ -106,7 +106,7 @@ def exclude_existing_entries(driver, jobData):
   for col in jobData.columns:
     JOB_DATA_TO_MATCH.append(col)
 
-  # isolate dict key values to only the most simple unqiue identifying info that needs to be compared
+  # isolate dict key values to only the most simple unique identifying info that needs to be compared
   for entry in entries_existing:
     delete_dict_keys(entry, JOB_DATA_TO_MATCH)
 
