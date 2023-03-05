@@ -74,15 +74,7 @@ def exclude_existing_entries(driver, jobData: pd.DataFrame) -> dict:
 
     # rebuild data from existing entries
     for entry in entries_existing_scraped:
-      cols = entry.find_elements(By.XPATH, './child::*')
-      date_raw = cols[0].text
-      summary_raw = cols[2].text.split('\n')
-      summary = {}
-      summary['Date of Work Search'] = pd.to_datetime(date_raw, format='%m/%d/%Y')
-      for i in summary_raw:
-        i = i.split(':')
-        summary[i[0]] = i[1]
-      entries_existing.append(summary)
+      entries_existing.append(rebuild_entry(entry))
 
   # filter out any excel job data days that already have a matching existing entry on the Work Search Summary page
   # doesn't account for when excel job and existing entry are the same job application but some column data is different (i.e. user retroactively added an email to excel job)
@@ -131,6 +123,21 @@ def exclude_existing_entries(driver, jobData: pd.DataFrame) -> dict:
     'entries_min': entries_min,
     'entries_existing_n': entries_existing_n,
   }
+
+
+def rebuild_entry(entry) -> dict:
+  '''
+  Convert a job entry's raw data scrapped from page into a clean dict
+  '''
+  entry = entry.find_elements(By.XPATH, './child::*')
+  date_raw = entry[0].text
+  summary_raw = entry[2].text.split('\n')
+  summary = {}
+  summary['Date of Work Search'] = pd.to_datetime(date_raw, format='%m/%d/%Y')
+  for i in summary_raw:
+    i = i.split(':')
+    summary[i[0]] = i[1]
+  return summary
 
 
 def delete_dict_keys(d: dict, keys: list[str]) -> dict:
