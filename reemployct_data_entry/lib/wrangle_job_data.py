@@ -62,9 +62,15 @@ def exclude_existing_entries(driver, jobData: pd.DataFrame) -> dict:
     entries_container = m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[3]/tbody')
     entries_existing_scraped = entries_container.find_elements(By.XPATH, "./tr")
     entries_existing_n = len(entries_existing_scraped)
-    print(colorama.Fore.GREEN +
-    '\n{} existing work entries found. Must enter {} more for DOL compliance.'.format(entries_existing_n, entries_min - entries_existing_n)
-      + colorama.Style.RESET_ALL)
+
+    if(entries_existing_n >= 3):
+      print(colorama.Fore.GREEN +
+      '\n{} existing work entries found. Minimum requirements already met.'.format(entries_existing_n)
+        + colorama.Style.RESET_ALL)
+    else:
+      print(colorama.Fore.GREEN +
+      '\n{} existing work entries found. Must enter {} more for DOL compliance.'.format(entries_existing_n, entries_min - entries_existing_n)
+        + colorama.Style.RESET_ALL)
 
     # rebuild data from existing entries
     for entry in entries_existing_scraped:
