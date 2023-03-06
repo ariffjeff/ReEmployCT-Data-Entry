@@ -29,10 +29,10 @@ class Test_Address_Parsing(unittest.TestCase):
     address_line_1 = wrangle.build_address_from_cleaned_address_dict(address_dict)
 
     self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], address_line_1)
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], '11770 Haynes Bridge Road')
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['PlaceName'], 'Alpharetta')
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['StateName'], 'Georgia')
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['ZipCode'], '30009')
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['PlaceName'], address_dict['PlaceName'])
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['StateName'], address_dict['StateName'])
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['ZipCode'], address_dict['ZipCode'])
+  
 
 if __name__ == '__main__':
   unittest.main()
