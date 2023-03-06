@@ -5,8 +5,9 @@ import pandas as pd
 import usaddress
 from selenium.webdriver.common.by import By
 
-from . import stateDictionary as states
+from .stateDictionary import States
 from . import webdriver as m_driver
+from .job_entries import JobEntry, JobType
 
 
 def sanitize_dataframe(df: pd.DataFrame, isolate_columns=[]) -> pd.DataFrame:
@@ -163,8 +164,8 @@ def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
     "ZipCode"
   ]
 
-  states_dict = states.states()
-  states_full_list = states.states_full_name_list()
+  states_full_names = States.list_full()
+  states_abbrev_names = States.list_abbrev()
   
   initial_n = len(df)
   removed = 0
@@ -176,7 +177,7 @@ def us_only_addresses(df: pd.DataFrame) -> pd.DataFrame:
 
     try:
       # check for US state
-      if(not(address['StateName'] in states_dict or address['StateName'] in states_full_list)):
+      if(not(address['StateName'] in states_abbrev_names or address['StateName'] in states_full_names)):
         indexes_to_drop.append(row)
         removed += 1
       else:
@@ -304,10 +305,10 @@ def state_abbrev_to_full_name(state_name) -> str:
   '''
   Convert US state name abbreviation to full state name
   '''
-  STATES_DICT = states.states()
+  STATE_ENUM = States
   if(len(state_name) == 2):
     try:
-      return STATES_DICT[state_name]
+      return STATE_ENUM[state_name].value
     except:
       raise Exception("Full state name conversion of state abbreviation could not be found.")
   return state_name
