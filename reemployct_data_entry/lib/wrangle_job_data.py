@@ -75,6 +75,7 @@ def exclude_existing_entries(driver, jobData: pd.DataFrame) -> dict:
     # rebuild data from existing entries
     for entry in entries_existing_scraped:
       entries_existing.append(rebuild_entry(entry))
+    del entries_existing_scraped
 
   # filter out any excel job data days that already have a matching existing entry on the Work Search Summary page
   # doesn't account for when excel job and existing entry are the same job application but some column data is different (i.e. user retroactively added an email to excel job)
