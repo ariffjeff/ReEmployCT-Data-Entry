@@ -3,6 +3,8 @@ import unittest
 import usaddress
 
 from reemployct_data_entry.lib import wrangle_job_data as wrangle
+from reemployct_data_entry.lib.job_entries import Address
+from reemployct_data_entry.lib.stateDictionary import States
 
 
 class Test_Address_Parsing(unittest.TestCase):
@@ -24,11 +26,10 @@ class Test_Address_Parsing(unittest.TestCase):
     }
 
     # create dict of US address components
-    address_dict = wrangle.parse_us_address(ADDRESS_INPUT)
-    address_dict['StateName'] = wrangle.state_abbrev_to_full_name(address_dict['StateName']) # Get state name or its abbreviation - MUST BE US ADDRESS
-    address_line_1 = wrangle.build_address_from_cleaned_address_dict(address_dict)
-
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], address_line_1)
+    address_dict = Address(ADDRESS_INPUT)
+    address_dict.state = address_dict.full_state_name()
+    
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], address_dict.address_line_1)
     self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], '11770 Haynes Bridge Road')
     self.assertEqual(ADDRESS_EXPECTED_OUTPUT['PlaceName'], 'Alpharetta')
     self.assertEqual(ADDRESS_EXPECTED_OUTPUT['StateName'], 'Georgia')

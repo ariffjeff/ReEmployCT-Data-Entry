@@ -31,7 +31,7 @@ class States(ExtendedEnum):
     CA = 'California'
     CO = 'Colorado'
     CT = 'Connecticut'
-    DC = 'District of Columbia'
+    DC = 'District Of Columbia'
     DE = 'Delaware'
     FL = 'Florida'
     GA = 'Georgia'
