@@ -6,9 +6,10 @@ from selenium.webdriver.common.by import By
 from reemployct_data_entry import entry_weeklyCertification, entry_workSearch
 from reemployct_data_entry.lib import webdriver as m_driver
 from reemployct_data_entry.lib import wrangle_job_data as wrangle
+from reemployct_data_entry.lib.job_control import Jobs, Jobs_RequiredData, PortalJobEntries
+from reemployct_data_entry.controller_credentials import Credentials
 
-
-def navigate(creds, jobData):
+def navigate(creds: Credentials, jobs: Jobs):
   
   site = "https://reemployct.dol.ct.gov/accessct/faces/login/login_local.xhtml"
   driver = m_driver.start_driver(site)
@@ -65,15 +66,17 @@ def navigate(creds, jobData):
   if(screenID == 'WC-800'): # Work Search Questionnaire page
     entry_workSearch.questionnaire(driver, CAPTCHA_TIMEOUT)
 
-    job_data_wrangled = wrangle.exclude_existing_entries(driver, jobData)
-    jobData = job_data_wrangled['jobData']
+    # job_data_wrangled = wrangle.get_existing_entries(driver, jobs)
+    existing_entries = PortalJobEntries(wrangle.get_existing_entries(driver))
+    jobs.jobs_portal.exclude_existing_entries(existing_entries)
+    # jobs = existing_entries['jobData']
 
-    # error if user doesn't have enough unique jobs to match minimum compliance 
-    if(len(jobData) < job_data_wrangled['entries_min'] - job_data_wrangled['entries_existing_n']):
+    # error if user doesn't have enough unique jobs to match minimum compliance
+    if(jobs.enough_entries_to_meet_minimum(existing_entries.entries)):
       print(colorama.Fore.RED)
       print("Not enough jobs found in excel file to enter for target week!")
-      print("{} jobs available to enter that aren't duplicates of any existing entries.".format(len(jobData)))
-      print("You must enter at least {} more jobs into the excel file for the target week.".format(job_data_wrangled['entries_min'] - job_data_wrangled['entries_existing_n']) + colorama.Style.RESET_ALL)
+      print(f"{len(jobs.jobs_portal.entries)} jobs available to enter that aren't duplicates of any existing entries.")
+      print(f"You must enter at least {jobs.required_num_of_portal_entries - len(existing_entries.entries)} more jobs into the excel file for the target week." + colorama.Style.RESET_ALL)
       print(colorama.Fore.GREEN + "If you do not need to look at the existing entries, quit the browser." + colorama.Style.RESET_ALL)
       # quit when user closes browser
       try:
@@ -83,24 +86,29 @@ def navigate(creds, jobData):
         return driver
 
     # enter job data
-    jobRow_i = 0
-    while(job_data_wrangled['entries_existing_n'] < job_data_wrangled['entries_min']):
-      jobRow = jobData.iloc[jobRow_i]
+    row_i = 0
+    ee = len(existing_entries.entries)
+    while(ee < jobs.required_num_of_portal_entries):
+      row = jobs.jobs_portal.entries[row_i]
       print(colorama.Fore.GREEN +
-      "\n(Job: {}/{}) Entering data: {} - {}".format(job_data_wrangled['entries_existing_n'] + 1, job_data_wrangled['entries_min'], jobRow['Employer Name'], jobRow['Position Applied For'])
+      "\n(Job: {}/{}) Entering data: {} - {}".format(ee + 1,
+                                                     jobs.required_num_of_portal_entries,
+                                                     row.__getattribute__(Jobs_RequiredData.EMPLOYER_NAME.value_attrib()),
+                                                     row.__getattribute__(Jobs_RequiredData.POSITION_APPLIED_FOR.value_attrib()))
       + colorama.Style.RESET_ALL)
-      if(job_data_wrangled['entries_existing_n'] > 0): # different page layout when existing entries are present
+      if(ee > 0): # different page layout when existing entries are present
         m_driver.ScrollPage.BOTTOM(driver) # scroll to bottom of page to reveal button since many entries will push button out of view
         m_driver.wait_find_element(driver, By.ID, 'method__1', forceDelay=0.3).click() # Add Another Work Search
-      entry_workSearch.enterWorkSearch(driver, jobRow)
-      job_data_wrangled['entries_existing_n'] += 1
-      jobRow_i += 1
+      entry_workSearch.enterWorkSearch(driver, row)
+      ee += 1
+      row_i += 1
+    existing_entries = PortalJobEntries(wrangle.get_existing_entries(driver, silent=True)) # update existing entry list
 
     #####################
     # Work Search Summary
     #####################
 
-    msg = 'Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart the program.'
+    msg = 'Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart this program.'
     m_driver.msg_user_verify_entries(msg)
 
     #############################################################

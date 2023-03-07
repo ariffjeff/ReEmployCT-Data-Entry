@@ -2,7 +2,7 @@ import unittest
 
 import usaddress
 
-from reemployct_data_entry.lib import wrangle_job_data as wrangle
+from reemployct_data_entry.lib.job_control import Address
 
 
 class Test_Address_Parsing(unittest.TestCase):
@@ -18,21 +18,19 @@ class Test_Address_Parsing(unittest.TestCase):
     ADDRESS_INPUT = '11770 Haynes Bridge Road, Suite 205 - 371, Alpharetta, GA 30009, US'
     ADDRESS_EXPECTED_OUTPUT = {
       'address_line_1': '11770 Haynes Bridge Road', # custom assembled
-      'PlaceName': 'Alpharetta',
+      'PlaceName': 'Alpharetta', # city
       'StateName': 'Georgia',
       'ZipCode': '30009'
     }
 
     # create dict of US address components
-    address_dict = wrangle.parse_us_address(ADDRESS_INPUT)
-    address_dict['StateName'] = wrangle.state_abbrev_to_full_name(address_dict['StateName']) # Get state name or its abbreviation - MUST BE US ADDRESS
-    address_line_1 = wrangle.build_address_from_cleaned_address_dict(address_dict)
-
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], address_line_1)
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], '11770 Haynes Bridge Road')
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['PlaceName'], 'Alpharetta')
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['StateName'], 'Georgia')
-    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['ZipCode'], '30009')
+    address_dict = Address(ADDRESS_INPUT)
+    address_dict.state = address_dict.full_state_name()
+    
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['address_line_1'], address_dict.address_line_1)
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['PlaceName'], address_dict.city)
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['StateName'], address_dict.state)
+    self.assertEqual(ADDRESS_EXPECTED_OUTPUT['ZipCode'], address_dict.zip)
 
 if __name__ == '__main__':
   unittest.main()
