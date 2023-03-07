@@ -3,13 +3,12 @@ import json
 import os
 
 import colorama
-import pandas as pd
 
 from reemployct_data_entry import controller_credentials as credCon
 from reemployct_data_entry import navigate_ReEmployCT, upgrade_check
 from reemployct_data_entry.lib import filepaths as m_fp
+from reemployct_data_entry.lib import job_control
 from reemployct_data_entry.lib import webdriver as m_driver
-from reemployct_data_entry.lib import wrangle_job_data as wrangle
 
 
 def main():
@@ -66,37 +65,26 @@ def main():
         print("Your credentials expired on " + creds.expire_time()['formatted'])
         credCon.create_user_credentials()
 
+
     ##########
     # Job Data
     ##########
 
-    table_jobs = pd.read_excel(json_jobDataFilepath['filepath_jobData'])
-    table_jobs = wrangle.drop_bad_rows(table_jobs) # only for removing completed different rows that break dataframe consistency
-    target_week = wrangle.isolate_week_from_day(table_jobs,  datetime.date.today() - datetime.timedelta(7)) # last week
+    jobs = job_control.Jobs(json_jobDataFilepath['filepath_jobData'])
+    jobs.isolate_columns(job_control.Jobs_RequiredData)
+    jobs.isolate_week(datetime.date.today() - datetime.timedelta(7))
+    if(not jobs.target_week_has_jobs()): return
+    jobs.sanitize()
+    jobs.us_only_addresses()
+    if(not jobs.target_week_has_jobs()): return
+    jobs.portal_format()
 
-    if(not wrangle.target_week_has_job_data(target_week)):
-        return
-    
-    # isolate only job data that is required for satisfying ReEmployCT's work-search job entry requirements.
-    JOB_DATA_TO_MATCH = [
-        'Date of Work Search',
-        'Employer Name',
-        'Position Applied For',
-        'Employer Address',
-        'Website Address'
-    ]
-    target_week['table_jobs'] = wrangle.sanitize_dataframe(target_week['table_jobs'], JOB_DATA_TO_MATCH)
-
-    target_week['table_jobs'] = wrangle.us_only_addresses(target_week['table_jobs'])
-
-    if(not wrangle.target_week_has_job_data(target_week)):
-        return
 
     ############
     # Data Entry
     ############
     
-    driver = navigate_ReEmployCT.navigate(creds, target_week['table_jobs'])
+    driver = navigate_ReEmployCT.navigate(creds, jobs)
     print(colorama.Fore.GREEN + "\nData entry finished.\n")
     input("Press Enter to quit..." + colorama.Style.RESET_ALL)
     driver.quit()

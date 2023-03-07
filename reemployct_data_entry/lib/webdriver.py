@@ -42,7 +42,7 @@ def print_solveCaptcha(timeout):
     + "**"*37
     + colorama.Style.RESET_ALL + "\n")
 
-def start_driver(site):
+def start_driver(site) -> webdriver.Firefox:
     print(colorama.Fore.YELLOW + "\n*** AVOID MOVING YOUR MOUSE OVER THE WEB PAGE DURING ELEMENT NAVIGATION TO PREVENT UNEXPECTED BEHAVIOUR AND ERRORS ***\n" + colorama.Style.RESET_ALL)
     print("Starting web driver...")
     driver = webdriver.Firefox()

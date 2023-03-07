@@ -1,21 +1,4 @@
-from enum import Enum
-
-
-class ExtendedEnum(Enum):
-
-    @classmethod
-    def list_full(cls):
-        '''
-        Return list of all the full names of the states
-        '''
-        return list(map(lambda c: c.value, cls))
-    
-    @classmethod
-    def list_abbrev(cls):
-        '''
-        Return list of all the abbreviated names of the states
-        '''
-        return list(map(lambda c: c.name, cls))
+from .class_enum import ExtendedEnum
 
 
 class States(ExtendedEnum):

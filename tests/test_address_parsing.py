@@ -2,9 +2,7 @@ import unittest
 
 import usaddress
 
-from reemployct_data_entry.lib import wrangle_job_data as wrangle
-from reemployct_data_entry.lib.job_entries import Address
-from reemployct_data_entry.lib.stateDictionary import States
+from reemployct_data_entry.lib.job_control import Address
 
 
 class Test_Address_Parsing(unittest.TestCase):
