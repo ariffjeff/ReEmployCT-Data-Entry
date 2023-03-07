@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "reemployct-data-entry"
-version = "1.2.3"
+version = "2.0.0"
 description = "Automated entry of job application data into Connecticut's DOL ReEmployCT portal."
 authors = ["Ariff Jeff <ariffjeff@icloud.com>"]
 readme = "README.md"
