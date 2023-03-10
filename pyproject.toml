@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "reemployct-data-entry"
-version = "2.0.1"
+version = "2.0.2"
 description = "Automated entry of job application data into Connecticut's DOL ReEmployCT portal."
 authors = ["Ariff Jeff <ariffjeff@icloud.com>"]
 readme = "README.md"
@@ -11,12 +11,12 @@ keywords = ["unemployment", "benefits"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-colorama = "*"
-pandas = "*"
-selenium = "*"
-cryptography = "*"
-openpyxl = "*"
-usaddress = "*"
+colorama = "^0.4.6"
+pandas = "^1.5.3"
+selenium = "^4.8.2"
+cryptography = "^39.0.2"
+openpyxl = "^3.1.1"
+usaddress = "^0.5.10"
 pwinput = "^1.0.2"
 requests = "^2.28.2"
 packaging = "^23.0"
