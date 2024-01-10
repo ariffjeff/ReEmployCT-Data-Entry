@@ -18,7 +18,7 @@ def main():
     upgrade_check.main()
 
     msg = '--- Automatic unemployment benefits data entry for the U.S. DOL ReEmploy CT for Firefox ---'
-    m_driver.msg_user_verify_entries(msg)
+    m_driver.msg_colored(msg)
 
     # create job data filepath json file if missing
     JOB_FILEPATH_JSON = m_fp.dynamic_full_path('jobDataLocation.json')

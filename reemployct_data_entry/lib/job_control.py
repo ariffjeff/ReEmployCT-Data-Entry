@@ -138,8 +138,8 @@ class Jobs():
       addresses_to_drop.append(self.jobs.iloc[i][Jobs_RequiredData.EMPLOYER_ADDRESS.value])
 
     if(len(addresses_to_drop) > 0):
-      m_driver.msg_user_verify_entries(f"{len(addresses_to_drop)} of {initial_n} job rows will be automatically excluded for the target week because they \
-  contain invalid addresses and/or are non-U.S. addresses.\
+      m_driver.msg_colored(f"{len(addresses_to_drop)} of {initial_n} job rows will be automatically excluded for the target week because they \
+contain invalid addresses and/or are non-U.S. addresses.\
   \nIf they are supposed to be U.S. addresses, please check they are entered correctly in your Excel data.\
   \nIf they are non-U.S. addresses, ReEmployCT won't accept them.", color="yellow")
 

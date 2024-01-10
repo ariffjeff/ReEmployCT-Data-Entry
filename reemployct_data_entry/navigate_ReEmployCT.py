@@ -109,7 +109,7 @@ def navigate(creds: Credentials, jobs: Jobs):
     #####################
 
     msg = 'Review all entries to ensure correctness, then click Submit.\nIf there are errors, either:\n1: Edit the entries and Submit or,\n2: Delete the bad entries, quit the browser, fix the excel data, and restart this program.'
-    m_driver.msg_user_verify_entries(msg)
+    m_driver.msg_colored(msg)
 
     #############################################################
     # Weekly Certification and Work Search Record Acknowledgement
@@ -134,7 +134,7 @@ def navigate(creds: Credentials, jobs: Jobs):
   if(screenID != 'SUC-002'): # SUC-002 = No Weeks are pending for the entered SSN. (weekly cert entry not possible)
     entry_weeklyCertification.main(driver)
 
-    m_driver.msg_user_verify_entries()
+    m_driver.msg_colored()
 
     # WC-301 will load if "Did you perform any work?" was set to "Yes"
     # WC-006 will load if it was set to "No"

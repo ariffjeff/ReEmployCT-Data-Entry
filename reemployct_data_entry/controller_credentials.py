@@ -298,7 +298,7 @@ def create_user_credentials():
     creds.credentials_expiration = timestamp
     
     creds.create_credentials_file()
-    m_driver.msg_user_verify_entries("Cred file created successfully at {}".format(time.ctime()), "green")
+    m_driver.msg_colored("Cred file created successfully at {}".format(time.ctime()), "green")
 
 def create_correction_user_credentials():
     '''
