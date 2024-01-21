@@ -6,9 +6,9 @@ import colorama
 
 from reemployct_data_entry import controller_credentials as credCon
 from reemployct_data_entry import navigate_ReEmployCT, upgrade_check
-from reemployct_data_entry.lib import filepaths as m_fp
+from reemployct_data_entry.lib import filepaths
 from reemployct_data_entry.lib import job_control
-from reemployct_data_entry.lib import browser_control as m_driver
+from reemployct_data_entry.lib import browser_control
 
 
 def main():
@@ -18,11 +18,11 @@ def main():
     upgrade_check.main()
 
     msg = '--- Automatic unemployment benefits data entry for the U.S. DOL ReEmploy CT for Firefox ---'
-    m_driver.msg_colored(msg)
+    browser_control.msg_colored(msg)
 
     # create job data filepath json file if missing
-    JOB_FILEPATH_JSON = m_fp.dynamic_full_path('jobDataLocation.json')
-    if(not m_fp.is_filepath_valid(JOB_FILEPATH_JSON)):
+    JOB_FILEPATH_JSON = filepaths.dynamic_full_path('jobDataLocation.json')
+    if(not filepaths.is_filepath_valid(JOB_FILEPATH_JSON)):
         with open(JOB_FILEPATH_JSON, 'w') as file:
             json.dump({'filepath_jobData': ''}, file)
         print("Created: {}".format(JOB_FILEPATH_JSON))
@@ -33,7 +33,7 @@ def main():
 
     # validate job data filepath
     updateJobFilepath = False
-    while(not m_fp.is_job_data_filepath_valid(json_jobDataFilepath['filepath_jobData'])):
+    while(not filepaths.is_job_data_filepath_valid(json_jobDataFilepath['filepath_jobData'])):
         json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.GREEN + "Enter the full filepath (including file extension) of your job data excel file: " + colorama.Style.RESET_ALL)
         updateJobFilepath = True
 
@@ -48,8 +48,8 @@ def main():
     ###################################
 
     # if missing credential files, delete anything remaining, then recreate credentials
-    CRED_FILE = m_fp.dynamic_full_path('credFile.ini')
-    KEY_KEY = m_fp.dynamic_full_path('key.key')
+    CRED_FILE = filepaths.dynamic_full_path('credFile.ini')
+    KEY_KEY = filepaths.dynamic_full_path('key.key')
     if(not os.path.exists(CRED_FILE) or not os.path.exists(KEY_KEY)):
         if(os.path.exists(CRED_FILE)):
             print("Missing credential's key file.\nDeleting credentials file to reset.")

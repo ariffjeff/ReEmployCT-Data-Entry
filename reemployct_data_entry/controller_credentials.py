@@ -9,8 +9,8 @@ import colorama
 from cryptography.fernet import Fernet
 from pwinput import pwinput
 
-from reemployct_data_entry.lib import filepaths as m_fp
-from reemployct_data_entry.lib import browser_control as m_driver
+from reemployct_data_entry.lib import filepaths
+from reemployct_data_entry.lib import browser_control
 
 
 class Encrypted_Property:
@@ -55,7 +55,7 @@ class Credentials():
         self.__key = ""
         self.password = ""
         self.__ssn = ""
-        self.__key_file = m_fp.dynamic_full_path('key.key')
+        self.__key_file = filepaths.dynamic_full_path('key.key')
         self.__credentials_expiration = -1
 
         # weekly certification correction - https://ctdolcontactcenter.force.com/submit/s/claim-filing-and-payment
@@ -170,7 +170,7 @@ class Credentials():
         Creates credential file with encrypted credentials.
         """
 
-        CRED_FILENAME = m_fp.dynamic_full_path('credFile.ini')
+        CRED_FILENAME = filepaths.dynamic_full_path('credFile.ini')
         credStr = self.create_formatted_cred_output_string()
         with open(CRED_FILENAME,'w') as file_in:
             file_in.write(credStr)
@@ -243,7 +243,7 @@ class Credentials():
 
     def get_encryption_key(self, key_file=None):
         if(key_file is None):
-            key_file = m_fp.dynamic_full_path('key.key')
+            key_file = filepaths.dynamic_full_path('key.key')
 
         if(not os.path.exists(key_file)):
             return None
@@ -259,7 +259,7 @@ class Credentials():
 
         encryption_key = self.get_encryption_key()
         f = Fernet(encryption_key)
-        with open(m_fp.dynamic_full_path('credFile.ini'), 'r') as cred_in:
+        with open(filepaths.dynamic_full_path('credFile.ini'), 'r') as cred_in:
             lines = cred_in.readlines()
             config = {}
             for line in lines:
@@ -280,7 +280,7 @@ def create_user_credentials():
     ''' Gets credentials for the DOL ReEmployCT portal from the user and saves them to the .ini creds file '''
     print(colorama.Fore.GREEN + "\nEnter your DOL ReEmployCT credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
     creds = Credentials()
-    creds.rebuild_creds_from_file(m_fp.dynamic_full_path('credFile.ini'))
+    creds.rebuild_creds_from_file(filepaths.dynamic_full_path('credFile.ini'))
 
     # accepting credentials
     creds.username = input("Username:")
@@ -298,7 +298,7 @@ def create_user_credentials():
     creds.credentials_expiration = timestamp
     
     creds.create_credentials_file()
-    m_driver.msg_colored("Cred file created successfully at {}".format(time.ctime()), "green")
+    browser_control.msg_colored("Cred file created successfully at {}".format(time.ctime()), "green")
 
 def create_correction_user_credentials():
     '''
@@ -308,7 +308,7 @@ def create_correction_user_credentials():
 
     print(colorama.Fore.GREEN + "\nEnter your DOL credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
     creds = Credentials()
-    creds.rebuild_creds_from_file(m_fp.dynamic_full_path('credFile.ini'))
+    creds.rebuild_creds_from_file(filepaths.dynamic_full_path('credFile.ini'))
 
     creds.name_first = input('First Name:')
     creds.name_last = input('Last Name:')

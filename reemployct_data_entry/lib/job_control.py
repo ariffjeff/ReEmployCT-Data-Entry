@@ -5,7 +5,7 @@ import pandas as pd
 import usaddress
 
 from reemployct_data_entry.lib import stateDictionary
-from reemployct_data_entry.lib import browser_control as m_driver
+from reemployct_data_entry.lib import browser_control
 from reemployct_data_entry.lib.class_enum import ExtendedEnum
 from reemployct_data_entry.lib.stateDictionary import States
 
@@ -138,7 +138,7 @@ class Jobs():
       addresses_to_drop.append(self.jobs.iloc[i][Jobs_RequiredData.EMPLOYER_ADDRESS.value])
 
     if(len(addresses_to_drop) > 0):
-      m_driver.msg_colored(f"{len(addresses_to_drop)} of {initial_n} job rows will be automatically excluded for the target week because they \
+      browser_control.msg_colored(f"{len(addresses_to_drop)} of {initial_n} job rows will be automatically excluded for the target week because they \
 contain invalid addresses and/or are non-U.S. addresses.\
   \nIf they are supposed to be U.S. addresses, please check they are entered correctly in your Excel data.\
   \nIf they are non-U.S. addresses, ReEmployCT won't accept them.", color="yellow")

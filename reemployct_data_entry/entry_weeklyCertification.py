@@ -1,7 +1,7 @@
 import colorama
 from selenium.webdriver.common.by import By
 
-from reemployct_data_entry.lib import browser_control as m_driver
+from reemployct_data_entry.lib import browser_control
 
 
 def main(driver):
@@ -10,7 +10,7 @@ def main(driver):
   #######################################
 
   # Were you physically able to work full time?
-  m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[1]/td[5]/table/tbody/tr/td[1]/div/div[2]').click()
+  browser_control.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[1]/td[5]/table/tbody/tr/td[1]/div/div[2]').click()
   # Were you available for full time work?
   driver.find_element(by=By.XPATH, value='/html/body/div[2]/div[5]/form/div[3]/table[1]/tbody/tr[4]/td[5]/table/tbody/tr/td[1]/div/div[2]').click()
   # Did you start school, college or training, which you have not already reported to the Labor Department?
