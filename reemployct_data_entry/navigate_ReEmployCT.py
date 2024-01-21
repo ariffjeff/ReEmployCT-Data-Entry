@@ -4,7 +4,7 @@ import colorama
 from selenium.webdriver.common.by import By
 
 from reemployct_data_entry import entry_weeklyCertification, entry_workSearch
-from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import browser_control as m_driver
 from reemployct_data_entry.lib import wrangle_job_data as wrangle
 from reemployct_data_entry.lib.job_control import Jobs, Jobs_RequiredData, PortalJobEntries
 from reemployct_data_entry.controller_credentials import Credentials

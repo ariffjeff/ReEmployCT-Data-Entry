@@ -1,7 +1,7 @@
 import colorama
 from selenium.webdriver.common.by import By
 
-from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import browser_control as m_driver
 
 
 def main(driver):

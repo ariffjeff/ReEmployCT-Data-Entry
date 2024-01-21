@@ -5,7 +5,7 @@ import pandas as pd
 import usaddress
 
 from reemployct_data_entry.lib import stateDictionary
-from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import browser_control as m_driver
 from reemployct_data_entry.lib.class_enum import ExtendedEnum
 from reemployct_data_entry.lib.stateDictionary import States
 

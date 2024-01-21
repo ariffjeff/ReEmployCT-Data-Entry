@@ -10,7 +10,7 @@ from cryptography.fernet import Fernet
 from pwinput import pwinput
 
 from reemployct_data_entry.lib import filepaths as m_fp
-from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import browser_control as m_driver
 
 
 class Encrypted_Property:

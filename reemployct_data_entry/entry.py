@@ -8,7 +8,7 @@ from reemployct_data_entry import controller_credentials as credCon
 from reemployct_data_entry import navigate_ReEmployCT, upgrade_check
 from reemployct_data_entry.lib import filepaths as m_fp
 from reemployct_data_entry.lib import job_control
-from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import browser_control as m_driver
 
 
 def main():
