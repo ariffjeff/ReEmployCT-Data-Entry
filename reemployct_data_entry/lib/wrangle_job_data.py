@@ -3,7 +3,7 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from . import browser_control
+from reemployct_data_entry.lib import browser_control
 
 
 def get_existing_entries(driver: webdriver.Firefox, silent=False) -> dict:
