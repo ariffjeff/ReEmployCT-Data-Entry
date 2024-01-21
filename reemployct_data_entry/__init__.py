@@ -7,6 +7,8 @@ __version__ = "2.0.4"
 
 # on `import reemployct_data_entry`, print the excel job data template file path for user convenience
 if __name__ == PACKAGE_NAME:
+  colorama.init() # init colored text to work on Windows
+  
   from reemployct_data_entry.lib import filepaths
 
   EXCEL_FILENAME = 'workSearch_template.xlsx'
