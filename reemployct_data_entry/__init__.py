@@ -1,7 +1,9 @@
+import colorama
+
 PACKAGE_NAME = 'reemployct_data_entry'
 
 # can't use stdlib importlib.metadata here because remote tests will fail due to needing the package build
-__version__ = "2.0.3"
+__version__ = "2.0.4"
 
 # on `import reemployct_data_entry`, print the excel job data template file path for user convenience
 if __name__ == PACKAGE_NAME:
@@ -10,4 +12,4 @@ if __name__ == PACKAGE_NAME:
   EXCEL_FILENAME = 'workSearch_template.xlsx'
   excel_path = filepaths.dynamic_full_path(EXCEL_FILENAME, validate=True)
 
-  print('Job data Excel template: {}'.format(excel_path))
+  print(colorama.Fore.MAGENTA + f'\nJob data Excel template: {excel_path}' + colorama.Style.RESET_ALL)

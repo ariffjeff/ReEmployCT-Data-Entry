@@ -1,4 +1,4 @@
-from .class_enum import ExtendedEnum
+from reemployct_data_entry.lib.class_enum import ExtendedEnum
 
 
 class States(ExtendedEnum):

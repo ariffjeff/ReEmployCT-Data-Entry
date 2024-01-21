@@ -5,7 +5,7 @@ import pandas as pd
 import usaddress
 
 from reemployct_data_entry.lib import stateDictionary
-from reemployct_data_entry.lib import webdriver as m_driver
+from reemployct_data_entry.lib import browser_control
 from reemployct_data_entry.lib.class_enum import ExtendedEnum
 from reemployct_data_entry.lib.stateDictionary import States
 
@@ -63,9 +63,11 @@ class Jobs():
     '''
 
     if(len(self.jobs) == 0):
-        print(colorama.Fore.RED +
-        f"\n*** You have no days of job data to enter for the target week! ({self.week.start.date()} - {self.week.end.date()}) ***\nQuitting script."
-        + colorama.Style.RESET_ALL)
+        print(colorama.Fore.RED + f"\n***\nYou have no valid days (rows) of job data from your Excel file to enter for the target week! ({self.week.start.date()} - {self.week.end.date()})")
+        print("If applicable, make sure that:")
+        print("   1. jobDataLocation.json is using the correct Excel file that contains your job data.")
+        print("   2. All the job data for the week is formatted correctly in the Excel file.")
+        print("Fix any issues and try again. Quitting script.\n***"+ colorama.Style.RESET_ALL)
         return False
     return True
   
@@ -138,7 +140,7 @@ class Jobs():
       addresses_to_drop.append(self.jobs.iloc[i][Jobs_RequiredData.EMPLOYER_ADDRESS.value])
 
     if(len(addresses_to_drop) > 0):
-      m_driver.msg_colored(f"{len(addresses_to_drop)} of {initial_n} job rows will be automatically excluded for the target week because they \
+      browser_control.msg_colored(f"{len(addresses_to_drop)} of {initial_n} job rows will be automatically excluded for the target week because they \
 contain invalid addresses and/or are non-U.S. addresses.\
   \nIf they are supposed to be U.S. addresses, please check they are entered correctly in your Excel data.\
   \nIf they are non-U.S. addresses, ReEmployCT won't accept them.", color="yellow")

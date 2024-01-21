@@ -3,7 +3,7 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from . import webdriver as m_driver
+from reemployct_data_entry.lib import browser_control
 
 
 def get_existing_entries(driver: webdriver.Firefox, silent=False) -> dict:
@@ -17,7 +17,7 @@ def get_existing_entries(driver: webdriver.Firefox, silent=False) -> dict:
   entries_existing = []
   entries_min = 3 # minimum 3 work search entries for compliance
   if(driver.title == 'Work Search Summary'): # this page will appear instead of 'Work Search Record Details' if there are already existing entries
-    entries_container = m_driver.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[3]/tbody')
+    entries_container = browser_control.wait_find_element(driver, By.XPATH, '/html/body/div[2]/div[5]/form/table[3]/tbody')
     entries_existing_scraped = entries_container.find_elements(By.XPATH, "./tr")
     entries_existing_n = len(entries_existing_scraped)
 
@@ -27,7 +27,7 @@ def get_existing_entries(driver: webdriver.Firefox, silent=False) -> dict:
         '\n{} existing work entries found. Minimum requirements already met.'.format(entries_existing_n)
           + colorama.Style.RESET_ALL)
       else:
-        print(colorama.Fore.GREEN +
+        print(colorama.Fore.YELLOW +
         '\n{} existing work entries found. Must enter {} more for DOL compliance.'.format(entries_existing_n, entries_min - entries_existing_n)
           + colorama.Style.RESET_ALL)
 

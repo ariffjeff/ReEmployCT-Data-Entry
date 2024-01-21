@@ -1,22 +1,24 @@
 import os
 import inspect
 
+import colorama
+
 
 def is_job_data_filepath_valid(filepath):
     if(not os.path.isfile(filepath) or os.path.splitext(filepath)[-1] != ".xlsx"):
         if(len(filepath) == 0): # mainly for when initial package gets installed and there is no path set
-            print("No user job data excel file found.")
+            print(colorama.Fore.YELLOW + "No user job data excel file found." + colorama.Style.RESET_ALL)
             return False
-        print("No user job data excel file found: {}".format(filepath))
+        print(colorama.Fore.YELLOW + f"No user job data excel file found: {filepath}" + colorama.Style.RESET_ALL)
         return False
-    print("User job data excel file found: {}".format(filepath))
+    print(colorama.Fore.GREEN + f"Using user job data from Excel file: {filepath}" + colorama.Style.RESET_ALL)
     return True
 
 def is_filepath_valid(filepath):
     if(not os.path.isfile(filepath)):
-        print("No user job data .json config found: {}".format(filepath))
+        print(colorama.Fore.YELLOW + f"No user job data .json config found: {filepath}" + colorama.Style.RESET_ALL)
         return False
-    print("User job data config found: {}".format(filepath))
+    print(colorama.Fore.GREEN + f"Using user job data config: {filepath}" + colorama.Style.RESET_ALL)
     return True
 
 def dynamic_full_path(filename, validate=False) -> str:
