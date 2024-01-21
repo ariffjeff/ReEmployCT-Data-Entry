@@ -25,7 +25,7 @@ def main():
     if(not filepaths.is_filepath_valid(JOB_FILEPATH_JSON)):
         with open(JOB_FILEPATH_JSON, 'w') as file:
             json.dump({'filepath_jobData': ''}, file)
-        print("Created: {}".format(JOB_FILEPATH_JSON))
+        print(colorama.Fore.GREEN + f"Created: {JOB_FILEPATH_JSON}" + colorama.Style.RESET_ALL)
 
     # get job data filepath from json
     with open(JOB_FILEPATH_JSON, 'r') as file:
@@ -34,7 +34,7 @@ def main():
     # validate job data filepath
     updateJobFilepath = False
     while(not filepaths.is_job_data_filepath_valid(json_jobDataFilepath['filepath_jobData'])):
-        json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.GREEN + "Enter the full filepath (including file extension) of your job data excel file: " + colorama.Style.RESET_ALL)
+        json_jobDataFilepath['filepath_jobData'] = input(colorama.Fore.CYAN + "Enter the full filepath (including file extension) of your job data excel file: " + colorama.Style.RESET_ALL)
         updateJobFilepath = True
 
     # set json job data filepath in jobDataLocation.json
@@ -52,10 +52,10 @@ def main():
     KEY_KEY = filepaths.dynamic_full_path('key.key')
     if(not os.path.exists(CRED_FILE) or not os.path.exists(KEY_KEY)):
         if(os.path.exists(CRED_FILE)):
-            print("Missing credential's key file.\nDeleting credentials file to reset.")
+            print(colorama.Fore.YELLOW + "Missing credential's key file. Deleting credentials file to reset." + colorama.Style.RESET_ALL)
             os.remove(CRED_FILE)
         elif(os.path.exists(KEY_KEY)):
-            print("Missing credentials file.\nDeleting credential's key file to reset.")
+            print(colorama.Fore.YELLOW + "Missing credentials file. Deleting credential's key file to reset.")
             os.remove(KEY_KEY)
         credCon.create_user_credentials()
 

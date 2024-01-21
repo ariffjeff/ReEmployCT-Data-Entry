@@ -27,7 +27,7 @@ def get_existing_entries(driver: webdriver.Firefox, silent=False) -> dict:
         '\n{} existing work entries found. Minimum requirements already met.'.format(entries_existing_n)
           + colorama.Style.RESET_ALL)
       else:
-        print(colorama.Fore.GREEN +
+        print(colorama.Fore.YELLOW +
         '\n{} existing work entries found. Must enter {} more for DOL compliance.'.format(entries_existing_n, entries_min - entries_existing_n)
           + colorama.Style.RESET_ALL)
 

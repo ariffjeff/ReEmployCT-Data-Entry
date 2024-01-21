@@ -63,9 +63,11 @@ class Jobs():
     '''
 
     if(len(self.jobs) == 0):
-        print(colorama.Fore.RED +
-        f"\n*** You have no days of job data to enter for the target week! ({self.week.start.date()} - {self.week.end.date()}) ***\nQuitting script."
-        + colorama.Style.RESET_ALL)
+        print(colorama.Fore.RED + f"\n***\nYou have no valid days (rows) of job data from your Excel file to enter for the target week! ({self.week.start.date()} - {self.week.end.date()})")
+        print("If applicable, make sure that:")
+        print("   1. jobDataLocation.json is using the correct Excel file that contains your job data.")
+        print("   2. All the job data for the week is formatted correctly in the Excel file.")
+        print("Fix any issues and try again. Quitting script.\n***"+ colorama.Style.RESET_ALL)
         return False
     return True
   

@@ -278,7 +278,7 @@ class Credentials():
 
 def create_user_credentials():
     ''' Gets credentials for the DOL ReEmployCT portal from the user and saves them to the .ini creds file '''
-    print(colorama.Fore.GREEN + "\nEnter your DOL ReEmployCT credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
+    print(colorama.Fore.CYAN + "\nEnter your DOL ReEmployCT credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
     creds = Credentials()
     creds.rebuild_creds_from_file(filepaths.dynamic_full_path('credFile.ini'))
 
@@ -306,7 +306,7 @@ def create_correction_user_credentials():
     https://ctdolcontactcenter.force.com/submit/s/claim-filing-and-payment
     '''
 
-    print(colorama.Fore.GREEN + "\nEnter your DOL credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
+    print(colorama.Fore.CYAN + "\nEnter your DOL credentials (encrypted and stored locally)..." + colorama.Style.RESET_ALL)
     creds = Credentials()
     creds.rebuild_creds_from_file(filepaths.dynamic_full_path('credFile.ini'))
 
