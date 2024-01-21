@@ -7,7 +7,9 @@ A Python CLI that automates entry of unemployment benefits data (weekly work sea
 Weekly job application data from an Excel file that the user actively maintains is accessed and automatically entered into ReEmployCT through a web browser instance controlled by Selenium. The program automates as much of the process as possible, such as login, data entry, page navigation, and secure user [credential handling](#user-credentials). The user will only need to interact for data entry review/confirmation and for captchas that need to be solved. Once the user finishes any required interaction then the program automatically takes back control. The program will walk you through setting everything up to get you on your way (see [Setup](#setup-python) first).
 
 ### Disclaimer:
-Users of this project are solely responsible for the use of the ReEmployCT website, accessed by this project. The author of this project assumes no liability for user actions or outcomes resulting from ReEmployCT's use, including any automated interactions. Users are required to always exercise caution and review any data that is entered into ReEmployCT.
+Users of this project are solely responsible for its use. The author assumes no liability for user actions or outcomes resulting from the use of ReEmployCT, including any automated interactions. Users are required to always exercise caution and review any data that is entered into ReEmployCT.
+
+It is important to note that this project locally handles the user credentials of their ReEmployCT account for convenience. While these credentials are encrypted for security purposes, it is crucial to understand the potential risks associated with the storage of encrypted credentials and the plain-text storage of the encryption key. The author disclaims any responsibility for the security of user credentials and advises users to assess and manage the associated risks accordingly.
 
 ## Requirements
 - Firefox
