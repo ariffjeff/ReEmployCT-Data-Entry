@@ -37,7 +37,7 @@ def enterWorkSearch(driver: webdriver.Firefox, entry: PortalJobEntry) -> None:
   ############################
 
   # work search type dropdown - employer contact
-  browser_control.wait_find_element(driver, By.ID, 'j_id_46_label', 120, forceDelay=0.3).click() # Type of Work Search - Dropdown
+  browser_control.wait_find_element(driver, By.ID, 'j_id_46_label', 120, forceDelay=0.6).click() # Type of Work Search - Dropdown
   driver.find_element(by=By.ID, value='j_id_46_1').click() # Type of Work Search - Employer Contact
   
   # Date of Work Search
