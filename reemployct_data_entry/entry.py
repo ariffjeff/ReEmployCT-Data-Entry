@@ -70,6 +70,7 @@ def main():
     # Job Data
     ##########
 
+    print(colorama.Fore.GREEN + "\nParsing user job data..." + colorama.Style.RESET_ALL)
     jobs = job_control.Jobs(json_jobDataFilepath['filepath_jobData'])
     jobs.isolate_columns(job_control.Jobs_RequiredData)
     jobs.isolate_week(datetime.date.today() - datetime.timedelta(7))
@@ -78,7 +79,7 @@ def main():
     jobs.us_only_addresses()
     if(not jobs.target_week_has_jobs()): return
     jobs.portal_format()
-
+    print(colorama.Fore.GREEN + "Parsing completed." + colorama.Style.RESET_ALL)
 
     ############
     # Data Entry

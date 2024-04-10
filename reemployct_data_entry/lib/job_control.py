@@ -115,8 +115,9 @@ class Jobs():
     initial_n = len(self.jobs)
     indexes_to_drop = []
     for i, row in self.jobs.iterrows():
-      address = Address.parse_us_address(row[Jobs_RequiredData.EMPLOYER_ADDRESS.value])
-      address[Address_RequiredComponents.ADDRESS_LINE_1.value] = Address.build_street_address_from_cleaned_address_dict(address)
+      raw_address = row[Jobs_RequiredData.EMPLOYER_ADDRESS.value]
+      address = Address.parse_us_address(raw_address)
+      address[Address_RequiredComponents.ADDRESS_LINE_1.value] = Address.build_street_address_from_cleaned_address_dict(address, raw_address)
 
       try:
         # check for US state
@@ -141,9 +142,9 @@ class Jobs():
 
     if(len(addresses_to_drop) > 0):
       browser_control.msg_colored(f"{len(addresses_to_drop)} of {initial_n} job rows will be automatically excluded for the target week because they \
-contain invalid addresses and/or are non-U.S. addresses.\
-  \nIf they are supposed to be U.S. addresses, please check they are entered correctly in your Excel data.\
-  \nIf they are non-U.S. addresses, ReEmployCT won't accept them.", color="yellow")
+contain invalid addresses.\nVerify that all addresses are:\
+  \n- valid U.S. addresses. Non U.S. addresses are not accepted by ReEmployCT.\
+  \n- correctly entered in your Excel data. If the address has a number typed as a word, then it WON'T be parsed properly. ('One Mill Road' vs. '1 Mill Road')", color="yellow")
 
       print(colorama.Fore.YELLOW, "Excluding jobs with these addresses...")
       for i in range(len(addresses_to_drop)):
@@ -356,20 +357,24 @@ class AddressControl():
       return address_dict
     
     @classmethod
-    def build_street_address_from_cleaned_address_dict(cls, address_dict) -> str:
+    def build_street_address_from_cleaned_address_dict(cls, address_dict, raw_address=None) -> str:
       '''
       Rebuild street address components of the cleaned address dict from a usaddress package parse into a single string
       '''
 
-      SEPARATER_KEY = 'StreetNamePostDirectional'
+      END_OF_STREET_ADDRESS_KEYS = 'StreetNamePostDirectional'
       address_line_1 = ''
       # US address components are sorted by a US standard, so loop through them to determine which dict elements to combine
       for key in usaddress.LABELS:
         if key in address_dict:
           address_line_1 += address_dict[key] + ' '
-        if(key == SEPARATER_KEY):
+        if(key == END_OF_STREET_ADDRESS_KEYS):
           address_line_1 = address_line_1.rstrip()
           break
+
+      if len(address_line_1) == 0 and raw_address is not None:
+        print(colorama.Fore.RED + f'Error! Employer Address could not be parsed: "{raw_address}"' + colorama.Style.RESET_ALL)
+      
       return address_line_1
     
 
