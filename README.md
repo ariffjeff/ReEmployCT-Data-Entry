@@ -14,6 +14,7 @@ It is important to note that this project locally handles the user credentials o
 ## Requirements
 - Firefox
 - Excel
+- [Python 3.10.10](https://www.python.org/downloads/release/python-31010/) (known to not work on some other versions!)
 - User job application data must only include U.S. addresses (ReEmployCT requirement)
 - Minimum of 3 work searches (job applications) per week (ReEmployCT requirement)
 - Currently only job applications are supported by this program as data entries into ReEmployCT from the Excel file. (Job applications are defined as "employer contacts" by CT DOL). In other words, a valid work search such as a job fair attendance can not be entered by this program and instead would need to be entered into ReEmployCT manually.
