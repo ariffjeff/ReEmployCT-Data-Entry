@@ -12,7 +12,7 @@ keywords = ["unemployment", "benefits"]
 [tool.poetry.dependencies]
 python = "^3.10.10"
 colorama = "^0.4.6"
-pandas = "2.2.3"
+pandas = "^2.2.3"
 selenium = "^4.8.2"
 cryptography = "^39.0.2"
 openpyxl = "^3.1.1"
