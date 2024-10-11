@@ -23,16 +23,23 @@ It is important to note that this project locally handles the user credentials o
 ### Video Tutorial
 [Automated Connecticut Weekly Unemployment Benefits](https://www.youtube.com/watch?v=Ff6FEwIE0Bw)
 
-### Install ([PyPI](https://pypi.org/project/reemployct-data-entry/))
+### Install
 ```
 pip install reemployct-data-entry
 ```
 
-
-
-### Setup (Python)
-You first need to get your copy of the Excel file that the program knows how to read job application data from:
+### Magic quick start command!
 ```
+jobentry
+```
+Run this command every time you want to run the program. If this doesn't work, continue with the manual steps below.
+
+<details>
+<summary><h2>Manual startup</h2></summary>
+You first need to get your copy of the Excel file that the program knows how to read job application data from:
+
+```
+python
 from reemployct_data_entry import entry
 ```
 This will import the module you'll use to run the program, but also provide you with the path to the provided Excel template. Make a copy of `workSearch_template.xlsx`, save it wherever (and rename it whatever) you want. Open your copy, remove the row that contains the example job application, and start adding your own data (in the same format as the example row).
@@ -46,10 +53,16 @@ You can either run from the CLI with:
 entry.main()
 ```
 Or simply click `entry.py` to run it.
+</details>
 
-## User Credentials
+<details>
+<summary><h2>User Credentials</h2></summary>
 To make the entire process streamlined, you can save your ReEmployCT login credentials when prompted by the CLI. Your credentials are encrypted and stored locally in the project folder in `credFile.ini` (only the username is left as plaintext). The encryption key is stored in `key.key`. You also have the option when saving your credentials to set an expiry time so that you will need to save a new set of credentials on a certain date.
 
 ### Resetting saved credentials
 1. Delete `credFile.ini` from the project folder
 2. You will be prompted for new credentials when you run `entry.main()`
+</details>
+
+### Links
+[PyPI](https://pypi.org/project/reemployct-data-entry/)
